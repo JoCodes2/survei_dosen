@@ -37,4 +37,9 @@ class SemesterController extends Controller
     {
         return $this->Semester->deleteData($id);
     }
+
+    public function toggleActive($id)
+    {
+        return $this->Semester->toggleActive($id);
+    }
 }

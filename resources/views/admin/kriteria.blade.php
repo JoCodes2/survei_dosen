@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header py-3 d-flex align-items-center justify-content-between">
             <h3 class="m-0 font-weight-bold">
-                <i class="fa-solid fa-chalkboard-user pr-2"></i> Dosen
+                <i class="fa-solid fa-chart-line pr-2"></i> Kriteria
             </h3>
 
             <button type="button" class="btn btn-primary btn-sm" id="btnTambah">
@@ -17,10 +17,10 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nidn</th>
-                            <th>Nama Dosen</th>
-                            <th>Email</th>
-                            <th>Jafung</th>
+                            <th>Kode Kriteria</th>
+                            <th>Nama Kriteria</th>
+                            <th>Bobot</th>
+                            <th>Jenis</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -53,40 +53,43 @@
                         @csrf
                         <input type="hidden" id="id" name="id">
 
-                        <!-- NIDN -->
-                        <div class="form-group mb-3">
-                            <label for="nidn">NIDN</label>
-                            <input type="text" class="form-control" name="nidn" id="nidn"
-                                placeholder="Masukkan NIDN">
-                            <div class="invalid-feedback" id="nidn-error"></div>
+                        {{-- Kode Kriteria --}}
+                        <div class="mb-3">
+                            <label for="kode_kriteria" class="form-label">Kode Kriteria</label>
+                            <input type="text" class="form-control" name="kode_kriteria" id="kode_kriteria"
+                                maxlength="10" placeholder="Contoh: K01">
+                            <div class="invalid-feedback" id="kode_kriteria-error"></div>
                         </div>
 
-                        <!-- Nama Lengkap -->
-                        <div class="form-group mb-3">
-                            <label for="nama_lengkap">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap"
-                                placeholder="Masukkan nama lengkap">
-                            <div class="invalid-feedback" id="nama_lengkap-error"></div>
+                        {{-- Nama Kriteria --}}
+                        <div class="mb-3">
+                            <label for="nama_kriteria" class="form-label">Nama Kriteria</label>
+                            <input type="text" class="form-control" name="nama_kriteria" id="nama_kriteria"
+                                maxlength="100" placeholder="Masukkan nama kriteria">
+                            <div class="invalid-feedback" id="nama_kriteria-error"></div>
                         </div>
 
-                        <!-- Email -->
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" name="email" id="email"
-                                placeholder="Masukkan email">
-                            <div class="invalid-feedback" id="email-error"></div>
+                        {{-- Bobot --}}
+                        <div class="mb-3">
+                            <label for="bobot" class="form-label">Bobot</label>
+                            <input type="number" class="form-control" name="bobot" id="bobot" step="0.01"
+                                min="0" placeholder="Contoh: 0.25">
+                            <div class="invalid-feedback" id="bobot-error"></div>
                         </div>
 
-                        <!-- Jabatan Struktural -->
-                        <div class="form-group mb-3">
-                            <label for="jabatan_fungsional">Jabatan Fungsional</label>
-                            <input type="text" class="form-control" name="jabatan_fungsional" id="jabatan_fungsional"
-                                placeholder="kosongkan jika tidak ada">
-                            <div class="invalid-feedback" id="jabatan_fungsional-error"></div>
+                        {{-- Jenis --}}
+                        <div class="mb-3">
+                            <label for="jenis" class="form-label">Jenis</label>
+                            <select class="form-select" name="jenis" id="jenis">
+                                <option value="benefit" selected>Benefit</option>
+                                <option value="cost">Cost</option>
+                            </select>
+                            <div class="invalid-feedback" id="jenis-error"></div>
                         </div>
 
                     </form>
                 </div>
+
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -111,7 +114,7 @@
             // Ambil data user
             function getData() {
                 $.ajax({
-                    url: "/survei/dosen",
+                    url: "/survei/kriteria",
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -120,10 +123,10 @@
                         $.each(response.data, function(index, item) {
                             tableBody += "<tr>";
                             tableBody += "<td>" + (index + 1) + "</td>";
-                            tableBody += "<td>" + item.nidn + "</td>";
-                            tableBody += "<td>" + item.nama_lengkap + "</td>";
-                            tableBody += "<td>" + item.email + "</td>";
-                            tableBody += "<td>" + showX(item.jabatan_fungsional) + "</td>";
+                            tableBody += "<td>" + item.kode_kriteria + "</td>";
+                            tableBody += "<td>" + item.nama_kriteria + "</td>";
+                            tableBody += "<td>" + item.bobot + "</td>";
+                            tableBody += "<td>" + showX(item.jenis) + "</td>";
                             tableBody += "<td>";
                             tableBody +=
                                 "<button type='button' class='btn btn-outline-primary btn-sm edit-btn' data-id='" +
@@ -161,7 +164,7 @@
 
                 let id = $('#id').val();
                 let formData = new FormData($('#upsertdataForm')[0]);
-                let url = id ? `/survei/dosen/update/${id}` : '/survei/dosen/create';
+                let url = id ? `/survei/kriteria/update/${id}` : '/survei/kriteria/create';
 
                 loadingAllert();
 
@@ -214,18 +217,18 @@
             $(document).on('click', '.edit-btn', function() {
                 let id = $(this).data('id');
                 $.ajax({
-                    url: `/survei/dosen/get/${id}`,
+                    url: `/survei/kriteria/get/${id}`,
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
                         console.log(response);
                         $('#DataModal').modal('show');
-                        $('#DataModalLabel').text('Edit Dosen');
+                        $('#DataModalLabel').text('Edit Kriteria');
                         $('#id').val(response.data.id);
-                        $('#nidn').val(response.data.nidn);
-                        $('#nama_lengkap').val(response.data.nama_lengkap);
-                        $('#email').val(response.data.email);
-                        $('#jabatan_fungsional').val(response.data.jabatan_fungsional);
+                        $('#kode_kriteria').val(response.data.kode_kriteria);
+                        $('#nama_kriteria').val(response.data.nama_kriteria);
+                        $('#bobot').val(response.data.bobot);
+                        $('#jenis').val(response.data.jenis);
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching data for edit:', error);
@@ -241,7 +244,7 @@
                 function deleteData() {
                     $.ajax({
                         type: 'DELETE',
-                        url: `/survei/dosen/delete/${id}`,
+                        url: `/survei/kriteria/delete/${id}`,
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -39,7 +39,31 @@
         <li class="menu-item {{ request()->is('user') ? 'active' : '' }}">
             <a href="/user" class="menu-link">
                 <i class="menu-icon fa-solid fa-user-gear"></i>
-                <div>Prodi</div>
+                <div>Pengguna</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('dosen') ? 'active' : '' }}">
+            <a href="/dosen" class="menu-link">
+                <i class="menu-icon fa-solid fa-chalkboard-user"></i>
+                <div>Dosen</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('kriteria') ? 'active' : '' }}">
+            <a href="/kriteria" class="menu-link">
+                <i class="menu-icon fa-solid fa-list-check"></i>
+                <div>Kriteria</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('programstudi') ? 'active' : '' }}">
+            <a href="/programstudi" class="menu-link">
+                <i class="menu-icon fa-solid fa-graduation-cap"></i>
+                <div>Program Studi</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('semester') ? 'active' : '' }}">
+            <a href="/semester" class="menu-link">
+                <i class="menu-icon fa-solid fa-calendar-alt"></i>
+                <div>Semester</div>
             </a>
         </li>
 
