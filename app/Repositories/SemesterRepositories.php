@@ -81,4 +81,25 @@ class SemesterRepositories implements SemesterInterfaces
         $data->delete();
         return $this->delete();
     }
+
+    public function toggleActive($id)
+    {
+        try {
+            $data = $this->Semester::find($id);
+            if (!$data) {
+                return $this->dataNotFound();
+            }
+            $data->is_active = !$data->is_active;
+            $data->save();
+            return $this->success($data);
+        } catch (\Throwable $th) {
+            return $this->error(
+                $th->getMessage(),
+                400,
+                $th,
+                class_basename($this),
+                __FUNCTION__
+            );
+        }
+    }
 }

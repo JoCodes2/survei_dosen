@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header py-3 d-flex align-items-center justify-content-between">
             <h3 class="m-0 font-weight-bold">
-                <i class="fa-solid fa-graduation-cap pr-2"></i> Prodi
+                <i class="fa-solid fa-calendar-alt pr-2"></i> Semester
             </h3>
 
             <button type="button" class="btn btn-primary btn-sm" id="btnTambah">
@@ -106,8 +106,9 @@
                             tableBody += "<td>" + (index + 1) + "</td>";
                             tableBody += "<td>" + item.nama_semester + "</td>";
                             tableBody += "<td>" + item.tahun_akademik + "</td>";
-                            tableBody += "<td>" + (item.is_active ? 'Aktif' : 'Tidak Aktif') +
-                                "</td>";
+                            tableBody +=
+                                "<td><input type='checkbox' class='form-check-input toggle-active' data-id='" +
+                                item.id + "' " + (item.is_active ? 'checked' : '') + "></td>";
 
                             tableBody += "<td>";
                             tableBody +=
@@ -282,6 +283,40 @@
                 $('#upsertdataForm')[0].reset();
                 $('#id').val('');
                 clearErrors();
+            });
+
+            // Toggle active status
+            $(document).on('change', '.toggle-active', function() {
+                let checkbox = $(this);
+                let id = checkbox.data('id');
+                let isChecked = checkbox.is(':checked');
+
+                checkbox.prop('disabled', true);
+
+                $.ajax({
+                    type: 'POST',
+                    url: `/survei/semester/toggle-active/${id}`,
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.code === 200 || response.status === 'success') {
+                            // Success, checkbox already toggled
+                        } else {
+                            // Revert on failure
+                            checkbox.prop('checked', !isChecked);
+                            errorAlert('Gagal mengubah status!');
+                        }
+                    },
+                    error: function(xhr) {
+                        // Revert on error
+                        checkbox.prop('checked', !isChecked);
+                        errorAlert('Terjadi kesalahan saat mengubah status!');
+                    },
+                    complete: function() {
+                        checkbox.prop('disabled', false);
+                    }
+                });
             });
 
         });

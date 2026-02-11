@@ -63,6 +63,7 @@ Route::prefix('survei')->group(function () {
         Route::get('/get/{id}', 'getDataById');
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');
+        Route::post('/toggle-active/{id}', 'toggleActive');
     });
 
     Route::prefix('dosen')->controller(DosenController::class)->group(function () {
