@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header py-3 d-flex align-items-center justify-content-between">
             <h3 class="m-0 font-weight-bold">
-                <i class="fa-solid fa-chalkboard-user pr-2"></i> Dosen
+                <i class="fa-solid fa-graduation-cap pr-2"></i> Prodi
             </h3>
 
             <button type="button" class="btn btn-primary btn-sm" id="btnTambah">
@@ -17,16 +17,14 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nidn</th>
-                            <th>Nama Dosen</th>
-                            <th>Email</th>
-                            <th>Jafung</th>
+                            <th>Kode Prodi</th>
+                            <th>Nama Prodi</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tBody">
                         <tr>
-                            <td colspan="6" class="text-center">Memuat data...</td>
+                            <td colspan="4" class="text-center">Memuat data...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -44,7 +42,7 @@
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="DataModalLabel">Data Pengguna</h5>
+                    <h5 class="modal-title" id="DataModalLabel">Data Program Studi</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -53,40 +51,25 @@
                         @csrf
                         <input type="hidden" id="id" name="id">
 
-                        <!-- NIDN -->
-                        <div class="form-group mb-3">
-                            <label for="nidn">NIDN</label>
-                            <input type="text" class="form-control" name="nidn" id="nidn"
-                                placeholder="Masukkan NIDN">
-                            <div class="invalid-feedback" id="nidn-error"></div>
+                        {{-- Kode Kriteria --}}
+                        <div class="mb-3">
+                            <label for="kode_prodi" class="form-label">Kode Prodi</label>
+                            <input type="text" class="form-control" name="kode_prodi" id="kode_prodi" maxlength="10"
+                                placeholder="SI/TI">
+                            <div class="invalid-feedback" id="kode_prodi-error"></div>
                         </div>
 
-                        <!-- Nama Lengkap -->
-                        <div class="form-group mb-3">
-                            <label for="nama_lengkap">Nama Lengkap</label>
-                            <input type="text" class="form-control" name="nama_lengkap" id="nama_lengkap"
-                                placeholder="Masukkan nama lengkap">
-                            <div class="invalid-feedback" id="nama_lengkap-error"></div>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" name="email" id="email"
-                                placeholder="Masukkan email">
-                            <div class="invalid-feedback" id="email-error"></div>
-                        </div>
-
-                        <!-- Jabatan Struktural -->
-                        <div class="form-group mb-3">
-                            <label for="jabatan_fungsional">Jabatan Fungsional</label>
-                            <input type="text" class="form-control" name="jabatan_fungsional" id="jabatan_fungsional"
-                                placeholder="kosongkan jika tidak ada">
-                            <div class="invalid-feedback" id="jabatan_fungsional-error"></div>
+                        {{-- Nama Kriteria --}}
+                        <div class="mb-3">
+                            <label for="nama_prodi" class="form-label">Nama prodi</label>
+                            <input type="text" class="form-control" name="nama_prodi" id="nama_prodi" maxlength="100"
+                                placeholder="Masukkan nama prodi">
+                            <div class="invalid-feedback" id="nama_prodi-error"></div>
                         </div>
 
                     </form>
                 </div>
+
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -111,7 +94,7 @@
             // Ambil data user
             function getData() {
                 $.ajax({
-                    url: "/survei/dosen",
+                    url: "/survei/programstudi",
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -120,10 +103,9 @@
                         $.each(response.data, function(index, item) {
                             tableBody += "<tr>";
                             tableBody += "<td>" + (index + 1) + "</td>";
-                            tableBody += "<td>" + item.nidn + "</td>";
-                            tableBody += "<td>" + item.nama_lengkap + "</td>";
-                            tableBody += "<td>" + item.email + "</td>";
-                            tableBody += "<td>" + showX(item.jabatan_fungsional) + "</td>";
+                            tableBody += "<td>" + item.kode_prodi + "</td>";
+                            tableBody += "<td>" + item.nama_prodi + "</td>";
+
                             tableBody += "<td>";
                             tableBody +=
                                 "<button type='button' class='btn btn-outline-primary btn-sm edit-btn' data-id='" +
@@ -161,7 +143,7 @@
 
                 let id = $('#id').val();
                 let formData = new FormData($('#upsertdataForm')[0]);
-                let url = id ? `/survei/dosen/update/${id}` : '/survei/dosen/create';
+                let url = id ? `/survei/programstudi/update/${id}` : '/survei/programstudi/create';
 
                 loadingAllert();
 
@@ -214,18 +196,16 @@
             $(document).on('click', '.edit-btn', function() {
                 let id = $(this).data('id');
                 $.ajax({
-                    url: `/survei/dosen/get/${id}`,
+                    url: `/survei/programstudi/get/${id}`,
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
                         console.log(response);
                         $('#DataModal').modal('show');
-                        $('#DataModalLabel').text('Edit Dosen');
+                        $('#DataModalLabel').text('Edit Program Studi');
                         $('#id').val(response.data.id);
-                        $('#nidn').val(response.data.nidn);
-                        $('#nama_lengkap').val(response.data.nama_lengkap);
-                        $('#email').val(response.data.email);
-                        $('#jabatan_fungsional').val(response.data.jabatan_fungsional);
+                        $('#kode_prodi').val(response.data.kode_prodi);
+                        $('#nama_prodi').val(response.data.nama_prodi);
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching data for edit:', error);
@@ -241,7 +221,7 @@
                 function deleteData() {
                     $.ajax({
                         type: 'DELETE',
-                        url: `/survei/dosen/delete/${id}`,
+                        url: `/survei/programstudi/delete/${id}`,
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -282,8 +262,6 @@
                 $(this).removeClass('is-invalid');
                 $('#' + this.id + '-error').text('');
             });
-
-
 
             // Tampilkan modal tambah
             $(document).on('click', '#btnTambah', function() {

@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <form id="userForm" method="POST">
+                    <form id="upsertdataForm" method="POST">
                         @csrf
                         <input type="hidden" id="id" name="id">
 
@@ -70,9 +70,9 @@
                             <input type="password" class="form-control" name="password" id="password"
                                 placeholder="Masukkan password">
                             <div class="invalid-feedback" id="password-error"></div>
-                            {{-- <small class="text-muted">
+                            <small class="text-muted">
                                 Kosongkan jika tidak ingin mengubah password
-                            </small> --}}
+                            </small>
                         </div>
 
                         {{-- Role --}}
@@ -80,9 +80,8 @@
                             <label for="role">Role</label>
                             <select name="role" id="role" class="form-control">
                                 <option value="">-- Pilih Role --</option>
-                                <option value="super-admin">Super Admin</option>
                                 <option value="admin">Admin</option>
-                                <option value="mahasiswa">Mahasiswa</option>
+                                <option value="prodi">Prodi</option>
                             </select>
                             <div class="invalid-feedback" id="role-error"></div>
                         </div>
@@ -106,7 +105,7 @@
             // Ambil data user
             function getData() {
                 $.ajax({
-                    url: "/sitasi/user",
+                    url: "/survei/user",
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -159,8 +158,8 @@
                 clearErrors();
 
                 let id = $('#id').val();
-                let formData = new FormData($('#userForm')[0]);
-                let url = id ? `/sitasi/user/update/${id}` : '/sitasi/user/create';
+                let formData = new FormData($('#upsertdataForm')[0]);
+                let url = id ? `/survei/user/update/${id}` : '/survei/user/create';
 
                 loadingAllert();
 
@@ -212,7 +211,7 @@
             $(document).on('click', '.edit-btn', function() {
                 let id = $(this).data('id');
                 $.ajax({
-                    url: `/sitasi/user/get/${id}`,
+                    url: `/survei/user/get/${id}`,
                     method: "GET",
                     dataType: "json",
                     success: function(response) {
@@ -241,7 +240,7 @@
                 function deleteData() {
                     $.ajax({
                         type: 'DELETE',
-                        url: `/sitasi/user/delete/${id}`,
+                        url: `/survei/user/delete/${id}`,
                         dataType: 'json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -276,14 +275,14 @@
                 $('.invalid-feedback').text('');
             }
 
-            $(document).on('input change', '#userForm input, #userForm textarea', function() {
+            $(document).on('input change', '#upsertdataForm input, #upsertdataForm textarea', function() {
                 $(this).removeClass('is-invalid');
                 $('#' + this.id + '-error').text('');
             });
 
             // Tampilkan modal tambah
             $(document).on('click', '#btnTambah', function() {
-                $('#userForm')[0].reset(); // reset form
+                $('#upsertdataForm')[0].reset(); // reset form
                 $('#id').val('');
                 clearErrors();
                 $('#DataModal').modal('show');
@@ -291,7 +290,7 @@
 
             // Reset saat modal ditutup
             $('#DataModal').on('hidden.bs.modal', function() {
-                $('#userForm')[0].reset();
+                $('#upsertdataForm')[0].reset();
                 $('#id').val('');
                 clearErrors();
             });

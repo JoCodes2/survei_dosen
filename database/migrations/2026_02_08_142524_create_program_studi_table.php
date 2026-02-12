@@ -15,8 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kode_prodi', 20)->unique();
             $table->string('nama_prodi', 100);
-            $table->string('jenjang', 10); // D3, S1, S2
-            $table->string('akreditasi', 10)->nullable();
+           
             $table->timestamps();
         });
     }
