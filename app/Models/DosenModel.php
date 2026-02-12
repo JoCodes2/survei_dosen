@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DosenModel extends Model
 {
@@ -21,4 +22,8 @@ class DosenModel extends Model
         'created_at',
         'updated_at'
     ];
+    public function jadwal(): HasMany
+    {
+        return $this->hasMany(JadwalPengampuModel::class, 'dosen_id');
+    }
 }
