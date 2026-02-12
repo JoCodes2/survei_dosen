@@ -25,8 +25,8 @@
             <span class="menu-header-text">Menu Utama</span>
         </li>
 
-        <li class="menu-item {{ request()->is('/') ? 'active' : '' }}">
-            <a href="/" class="menu-link">
+        <li class="menu-item {{ request()->is('dashboard') ? 'active' : '' }}">
+            <a href="/dashboard" class="menu-link">
                 <i class="menu-icon fa-solid fa-house"></i>
                 <div>Dashboard</div>
             </a>
