@@ -31,8 +31,6 @@ class JadwalRepositories implements JadwalPengampuInterfaces
             $data->dosen_id = $request->dosen_id;
             $data->program_studi_id = $request->program_studi_id;
             $data->semester_id = $request->semester_id;
-            $data->kode_mk = $request->kode_mk;
-            $data->nama_matakuliah = $request->nama_matakuliah;
             $data->kelas = $request->kelas;
             $data->save();
         } catch (\Throwable $th) {
@@ -60,8 +58,6 @@ class JadwalRepositories implements JadwalPengampuInterfaces
             $data->dosen_id = $request->dosen_id;
             $data->program_studi_id = $request->program_studi_id;
             $data->semester_id = $request->semester_id;
-            $data->kode_mk = $request->kode_mk;
-            $data->nama_matakuliah = $request->nama_matakuliah;
             $data->kelas = $request->kelas;
             $data->save();
         } catch (\Throwable $th) {

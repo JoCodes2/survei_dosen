@@ -31,6 +31,9 @@ Route::get('/programstudi', function () {
 Route::get('/semester', function () {
     return view('admin.semester');
 });
+Route::get('/jadwal', function () {
+    return view('pages.jadwal');
+});
 
 Route::prefix('survei')->group(function () {
 

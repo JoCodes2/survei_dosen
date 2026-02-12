@@ -27,8 +27,6 @@ class JadwalPengampuRequest extends FormRequest
             'dosen_id' => 'required',
             'program_studi_id' => 'required',
             'semester_id' => 'required',
-            'kode_mk' => 'required',
-            'nama_matakuliah' => 'required',
             'kelas' => 'required',
         ];
     }
