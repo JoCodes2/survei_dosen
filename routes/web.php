@@ -7,8 +7,12 @@ use App\Http\Controllers\CMS\SemesterController;
 use App\Http\Controllers\CMS\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('admin.dashboard');
+});
+
+Route::get('/', function () {
+    return view('ui.penilaian');
 });
 
 Route::get('/user', function () {
