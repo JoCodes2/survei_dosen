@@ -72,6 +72,12 @@
                 <div>Kriteria</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->is('penilaian') ? 'active' : '' }}">
+            <a href="/penilaian" class="menu-link">
+                <i class="menu-icon fa-solid fa-list"></i>
+                <div>Hasil Survei</div>
+            </a>
+        </li>
 
     </ul>
 </aside>
