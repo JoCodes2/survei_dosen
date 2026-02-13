@@ -43,6 +43,37 @@ class kelasService {
             console.error('Error loading filters:', error);
         }
     }
+    async loadOptions() {
+        try {
+            const resSemester = await this.ajaxRequest(`${appUrl}/survei/semester/`, 'GET');
+            if (resSemester.code === 200) {
+                let options = '<option value="">-- Semua Semester --</option>';
+                resSemester.data.forEach(item => {
+                    options += `<option value="${item.id}">${item.nama_semester}</option>`;
+                });
+                $('#semester_id').html(options);
+            }
+
+            const resProdi = await this.ajaxRequest(`${appUrl}/survei/programstudi/`, 'GET');
+            if (resProdi.code === 200) {
+                let options = '<option value="">-- Semua Prodi --</option>';
+                resProdi.data.forEach(item => {
+                    options += `<option value="${item.id}">${item.nama_prodi}</option>`;
+                });
+                $('#program_studi_id').html(options);
+            }
+            const resDosen = await this.ajaxRequest(`${appUrl}/survei/dosen/`, 'GET');
+            if (resDosen.code === 200) {
+                let options = '<option value="">-- Semua Dosen --</option>';
+                resDosen.data.forEach(item => {
+                    options += `<option value="${item.id}">${item.nama_lengkap}</option>`;
+                });
+                $('#dosen_id').html(options);
+            }
+        } catch (error) {
+            console.error('Error loading filters:', error);
+        }
+    }
 
     async fetchData() {
         try {
@@ -95,10 +126,10 @@ class kelasService {
             filteredData.forEach((item, index) => {
                 const actions = `
                     <div class="d-flex justify-content-center gap-2">
-                        <button class="btn btn-info btn-sm btnEdit" data-id="${item.id}" title="Edit">
-                            <i class="fa fa-edit text-white"></i>
+                        <button class="btn btn-outline-info btn-sm btnEditKelas" data-id="${item.id}" title="Edit">
+                            <i class="fa fa-edit "></i>
                         </button>
-                        <button class="btn btn-danger btn-sm btnHapus" data-id="${item.id}" title="Hapus">
+                        <button class="btn btn-outline-danger btn-sm btnHapusKelas" data-id="${item.id}" title="Hapus">
                             <i class="fa fa-trash"></i>
                         </button>
                     </div>`;
@@ -124,15 +155,12 @@ class kelasService {
 
 
     async upsertData(formElement, checkingEdit) {
-        const submitButton = $('#btnSimpanGelombang');
+        const submitButton = $('#btnSimpanKelas');
         const originalText = submitButton.html();
 
         try {
             const formData = new FormData(formElement);
 
-            if (!$('#is_aktif').is(':checked')) {
-                formData.set('is_aktif', 0);
-            }
 
             submitButton.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
 
@@ -145,7 +173,7 @@ class kelasService {
             }
 
             successAlert().then(() => {
-                $('#modalTambahGelombang').modal('hide');
+                $('#modalTambahKelas').modal('hide');
                 realoadBrowser();
                 submitButton.attr('disabled', false).html(originalText);
             });
@@ -156,7 +184,7 @@ class kelasService {
             if (error.status === 422 || error.response?.status === 422) {
                 warningAlert();
                 const errors = error.responseJSON?.data ?? error.response?.data;
-                const validator = $('#formGelombang').validate();
+                const validator = $('#formKelas').validate();
 
                 const errorList = {};
                 $.each(errors, function (field, messages) {
@@ -179,25 +207,15 @@ class kelasService {
 
             const item = responseData.data;
 
-            $('#modalTambahGelombang').modal('show');
-
-            $('#modalTambahGelombang .modal-title').text('Edit Gelombang Pengajuan');
+            $('#modalTambahKelas').modal('show');
 
             $('#id').val(item.id);
-            $('#tahun_ajaran').val(item.tahun_ajaran);
-            $('#semester').val(item.semester);
-            $('#gelombang_ke').val(item.gelombang_ke);
-            $('#tgl_mulai').val(item.tgl_mulai);
-            $('#tgl_selesai').val(item.tgl_selesai);
-
-            if (item.is_aktif == 1) {
-                $('#is_aktif').prop('checked', true);
-            } else {
-                $('#is_aktif').prop('checked', false);
-            }
-
-            $('#formGelombang').validate().resetForm();
-            $('#formGelombang .form-control').removeClass('is-invalid');
+            $('#kelas').val(item.kelas);
+            $('#semester_id').val(item.semester_id);
+            $('#program_studi_id').val(item.program_studi_id);
+            $('#dosen_id').val(item.dosen_id);
+            $('#formKelas').validate().resetForm();
+            $('#formKelas .form-control').removeClass('is-invalid');
 
         } catch (error) {
             console.error('Error saat mengambil data:', error);
@@ -209,14 +227,13 @@ class kelasService {
         // Memanggil confirmAlert1 dengan parameter: title, text, dan callback
         confirmAlert1(
             "Hapus Data",
-            "Apakah Anda yakin ingin menghapus data gelombang ini?",
+            "Apakah Anda yakin ingin menghapus data  ini?",
             async () => {
                 // Bagian ini adalah callback yang dijalankan jika user menekan "Ya"
                 try {
                     const responseData = await this.ajaxRequest(`${appUrl}/survei/jadwal/delete/${id}`, 'DELETE');
 
                     if (responseData.code === 200) {
-                        // Jika sukses, tampilkan successAlert lalu reload
                         await successAlert();
                         realoadBrowser();
                     } else {

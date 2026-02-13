@@ -5,43 +5,43 @@ $(document).ready(function () {
     const kelas = new kelasService();
     kelas.loadFilters();
     kelas.getAllData();
+    kelas.loadOptions();
     $(document).on('click', '#btnFilter', function () {
         kelas.getAllData();
     });
 
-    // Trigger Modal Tambah
-    $('#btnTambah').on('click', function () {
-        $('#formGelombang')[0].reset();
-        $('#gelombang_id').val(''); // Pastikan input hidden ID di form memiliki id="gelombang_id"
+    $('#btnTambahKelas').on('click', function () {
+        $('#formKelas')[0].reset();
+        $('#id').val('');
+        $('#dosen_id').val('');
+        $('#program_studi_id').val('');
+        $('#semester').val('');
 
-        // Bersihkan state validasi
-        $('#formGelombang .form-control').removeClass('is-valid is-invalid');
+        $('#formKelas .form-control').removeClass('is-valid is-invalid');
         $('.error-msg').text('');
 
-        $('#modalTambahGelombang').modal('show');
+        $('#modalTambahKelas').modal('show');
     });
 
     // Fungsi Validasi
     function validation() {
-        $('#formGelombang').validate({
+        $('#formKelas').validate({
             rules: {
-                tahun_ajaran: { required: true },
-                semester: { required: true },
-                gelombang_ke: { required: true, number: true },
-                tgl_mulai: { required: true, date: true },
-                tgl_selesai: { required: true, date: true },
+                kelas: { required: true },
+                semester_id: { required: true },
+                program_studi_id: { required: true },
+                dosen_id: { required: true },
+
             },
             messages: {
-                tahun_ajaran: { required: "Tahun ajaran tidak boleh kosong" },
-                semester: { required: "Pilih semester" },
-                gelombang_ke: { required: "Gelombang tidak boleh kosong", number: "Harus berupa angka" },
-                tgl_mulai: { required: "Tanggal mulai harus diisi" },
-                tgl_selesai: { required: "Tanggal selesai harus diisi" },
+                kelas: { required: "Kelas tidak boleh kosong" },
+                semester_id: { required: "Pilih semester" },
+                program_studi_id: { required: "Pilih program studi" },
+                dosen_id: { required: "Pilih dosen" },
             },
             errorElement: 'small',
             errorPlacement: function (error, element) {
                 error.addClass('text-danger');
-                // Masukkan error ke dalam kontainer .error-msg yang sudah kita siapkan di HTML
                 const errorId = '#error-' + element.attr('name');
                 if ($(errorId).length) {
                     $(errorId).html(error);
@@ -60,8 +60,7 @@ $(document).ready(function () {
 
     validation();
 
-    // Validasi real-time saat input berubah
-    $('#tahun_ajaran, #semester, #gelombang_ke, #tgl_mulai, #tgl_selesai').on('change input', function () {
+    $('#semester_id, #program_studi_id, #dosen_id').on('change input', function () {
         $(this).valid();
     });
 
@@ -69,25 +68,25 @@ $(document).ready(function () {
         return $('#id').val() ? true : false;
     }
 
-    $('#btnSimpanGelombang').on('click', function (e) {
+    $('#btnSimpanKelas').on('click', function (e) {
         e.preventDefault();
-        if ($('#formGelombang').valid()) {
-            gelombang.upsertData($('#formGelombang')[0], checkingEdit);
+        if ($('#formKelas').valid()) {
+            kelas.upsertData($('#formKelas')[0], checkingEdit);
         }
     });
 
-    $(document).on('click', '.btnEdit', function () {
+    $(document).on('click', '.btnEditKelas', function () {
         const id = $(this).data('id');
-        gelombang.getDataById(id);
+        kelas.getDataById(id);
 
     });
 
-    $(document).on('click', '.btnHapus-gelombang', function () {
+    $(document).on('click', '.btnHapusKelas', function () {
         const id = $(this).data('id');
-        gelombang.deleteData(id);
+        kelas.deleteData(id);
     });
 
-    $('#modalTambahGelombang').on('hidden.bs.modal', function () {
+    $('#modaTambahKelas').on('hidden.bs.modal', function () {
         $('#formGelombang')[0].reset();
         $('.form-control').removeClass('is-invalid is-valid');
         $('.error-msg').text('');

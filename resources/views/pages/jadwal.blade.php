@@ -5,7 +5,7 @@
 
     <x-base-header title="Manajemen Kelas Dosen" icon="fa-solid fa-person-chalkboard">
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary btn-sm" id="btnTambah">
+            <button type="button" class="btn btn-primary btn-sm" id="btnTambahKelas">
                 <i class="fa fa-plus"></i> Tambah Kelas
             </button>
         </div>
@@ -56,14 +56,18 @@
 {{-- Bagian Modal (Tetap sama) --}}
 <x-base-modal
     id="modalTambahKelas"
-    title="Tambah Kelas Dosen Baru"
+    title="Form Kelas"
     btnId="btnSimpanKelas"
     btnText="Simpan Kelas"
 >
-    <form id="formKelas">
+    <form id="formKelas" method="POST">
         @csrf
         <input type="hidden" name="id" id="id">
-
+        <div class="mb-3">
+            <label for="kelas" class="form-label font-weight-bold">Kelas</label>
+            <input type="text" name="kelas" id="kelas" class="form-control" placeholder="Contoh TI 1.1, SI 1.1">
+            <small class="text-danger error-msg" id="error-kelas"></small>
+        </div>
         <div class="mb-3">
             <label for="dosen_id" class="form-label font-weight-bold">Dosen</label>
             <select class="form-control select2" id="dosen_id" name="dosen_id" style="width: 100%;">
@@ -87,12 +91,6 @@
                 </select>
                 <small class="text-danger error-msg" id="error-semester_id"></small>
             </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="nama_matakuliah" class="form-label font-weight-bold">Nama Mata Kuliah</label>
-            <input type="text" class="form-control" id="nama_matakuliah" name="nama_matakuliah" placeholder="Pemrograman Web">
-            <small class="text-danger error-msg" id="error-nama_matakuliah"></small>
         </div>
     </form>
 </x-base-modal>
