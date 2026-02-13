@@ -1,8 +1,13 @@
-import gelombangService from "../services/gelombang.service.js";
+import kelasService from "../services/kelas.service.js";
+
 
 $(document).ready(function () {
-    const gelombang = new gelombangService();
-    gelombang.getAllData();
+    const kelas = new kelasService();
+    kelas.loadFilters();
+    kelas.getAllData();
+    $(document).on('click', '#btnFilter', function () {
+        kelas.getAllData();
+    });
 
     // Trigger Modal Tambah
     $('#btnTambah').on('click', function () {

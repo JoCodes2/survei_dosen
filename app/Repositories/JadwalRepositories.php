@@ -18,12 +18,17 @@ class JadwalRepositories implements JadwalPengampuInterfaces
 
     public function getAllData()
     {
-        $data = $this->jadwalPengampu::all();
-        if (!$data) {
+        $data = $this->jadwalPengampu
+            ->with(['dosen', 'program_studi', 'semester'])
+            ->get();
+
+        if ($data->isEmpty()) {
             return $this->dataNotFound();
         }
+
         return $this->success($data);
     }
+
     public function createData(JadwalPengampuRequest $request)
     {
         try {
@@ -45,7 +50,7 @@ class JadwalRepositories implements JadwalPengampuInterfaces
     }
     public function getDataById($id)
     {
-        $data = $this->jadwalPengampu::find($id);
+        $data = $this->jadwalPengampu::with(['dosen', 'program_studi', 'semester'])->find($id);
         if (!$data) {
             return $this->idOrDataNotFound();
         }

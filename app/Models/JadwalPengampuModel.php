@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class JadwalPengampuModel extends Model
 {
     use HasFactory, HasUuids;
-    protected $table = 'jadwal_pengampu';
+    protected $table = 'kelas';
     protected $fillable = [
         'id',
         'dosen_id',
@@ -30,6 +30,6 @@ class JadwalPengampuModel extends Model
     }
     public function semester(): BelongsTo
     {
-        return $this->belongsTo(SemesterModel::class, 'semester_id');
+        return $this->belongsTo(semesterModel::class, 'semester_id');
     }
 }

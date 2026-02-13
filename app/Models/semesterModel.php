@@ -22,8 +22,8 @@ class semesterModel extends Model
         'updated_at'
     ];
 
-    public function jadwal(): HasMany
+    public function jadwal_pengampu()
     {
-        return $this->hasMany(JadwalPengampuModel::class, 'semester_id');
+        return $this->hasMany(JadwalPengampuModel::class, 'semester_id', 'id');
     }
 }

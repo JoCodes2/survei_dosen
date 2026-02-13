@@ -20,8 +20,8 @@ class ProgramstudiModel extends Model
         'created_at',
         'updated_at'
     ];
-    public function jadwal(): HasMany
+    public function jadwal_pengampu()
     {
-        return $this->hasMany(JadwalPengampuModel::class, 'program_studi_id');
+        return $this->hasMany(JadwalPengampuModel::class, 'program_studi_id', 'id');
     }
 }

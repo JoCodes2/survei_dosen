@@ -99,5 +99,5 @@
 @endsection
 
 @section('scripts')
-
+<script type="module" src="{{ asset('controllers/kelas.controller.js') }}"></script>
 @endsection
