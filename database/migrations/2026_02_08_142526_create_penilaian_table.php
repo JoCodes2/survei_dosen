@@ -19,12 +19,11 @@ return new class extends Migration
             $table->foreignUuid('kriteria_id')->constrained('kriteria')->onDelete('cascade');
             $table->integer('skor');
             $table->timestamps();
+
+            $table->unique(['nim', 'kelas_id', 'kriteria_id'], 'nim_kelas_kriteria_unique');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('penilaian');
