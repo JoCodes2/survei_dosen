@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CMS\DosenController;
+use App\Http\Controllers\CMS\JadwalPengampuController;
 use App\Http\Controllers\CMS\KriteriaController;
 use App\Http\Controllers\CMS\ProgramstudiController;
 use App\Http\Controllers\CMS\SemesterController;
@@ -33,6 +34,9 @@ Route::get('/programstudi', function () {
 
 Route::get('/semester', function () {
     return view('admin.semester');
+});
+Route::get('/jadwal', function () {
+    return view('pages.jadwal');
 });
 
 Route::prefix('survei')->group(function () {
@@ -71,6 +75,14 @@ Route::prefix('survei')->group(function () {
     });
 
     Route::prefix('dosen')->controller(DosenController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+
+    Route::prefix('jadwal')->controller(JadwalPengampuController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
         Route::get('/get/{id}', 'getDataById');
