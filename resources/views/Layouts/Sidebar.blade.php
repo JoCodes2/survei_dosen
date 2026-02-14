@@ -74,7 +74,7 @@
         </li>
         <li class="menu-item {{ request()->is('penilaian') ? 'active' : '' }}">
             <a href="/penilaian" class="menu-link">
-                <i class="menu-icon fa-solid fa-list"></i>
+                <i class="menu-icon fa-solid fa-poll-h"></i>
                 <div>Hasil Survei</div>
             </a>
         </li>

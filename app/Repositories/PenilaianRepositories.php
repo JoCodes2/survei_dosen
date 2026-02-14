@@ -20,7 +20,10 @@ class PenilaianRepositories implements PenilaianInterfaces
 
     public function getAllData()
     {
-        $data = $this->penilaianDosen->with(['kriteria', 'kelas'])->get();
+        $data = $this->penilaianDosen->with([
+            'kriteria',
+            'kelas.dosen'
+        ])->get();
 
         if ($data->isEmpty()) {
             return $this->dataNotFound();
