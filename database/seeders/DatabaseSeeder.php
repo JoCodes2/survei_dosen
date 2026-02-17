@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'A5' => [
                 ['MHS001', 'Mahasiswa R1', [3, 3, 3, 5]],
                 ['MHS002', 'Mahasiswa R2', [5, 4, 5, 5]],
-                ['MHS002', 'Mahasiswa R2', [3, 4, 3, 4]],
+                ['MHS003', 'Mahasiswa R3', [3, 4, 3, 4]],
             ],
         ];
 
