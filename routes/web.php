@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('ui.penilaian');
 });
 
+Route::get('/login', function () {
+    return view('auth.login');
+});
+
 Route::get('/user', function () {
     return view('admin.user');
 });
