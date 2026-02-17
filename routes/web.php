@@ -1,16 +1,18 @@
 <?php
 
 use App\Http\Controllers\CMS\DosenController;
+use App\Http\Controllers\CMS\JadwalPengampuController;
 use App\Http\Controllers\CMS\KriteriaController;
+use App\Http\Controllers\CMS\MarcosController;
+use App\Http\Controllers\CMS\PenilaianController;
 use App\Http\Controllers\CMS\ProgramstudiController;
 use App\Http\Controllers\CMS\SemesterController;
 use App\Http\Controllers\CMS\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-});
 
+
+// jangan dimasukan ke dalam route auth
 Route::get('/', function () {
     return view('ui.penilaian');
 });
@@ -18,7 +20,63 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('auth.login');
 });
+Route::prefix('survei')->group(
+    function () {
 
+        Route::prefix('penilaian')->controller(PenilaianController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+        Route::prefix('programstudi')->controller(ProgramstudiController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('kriteria')->controller(KriteriaController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('semester')->controller(SemesterController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+            Route::post('/toggle-active/{id}', 'toggleActive');
+        });
+
+        Route::prefix('dosen')->controller(DosenController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+        Route::prefix('jadwal')->controller(JadwalPengampuController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+    }
+);
+
+// route masukan ke auth
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+});
 Route::get('/user', function () {
     return view('admin.user');
 });
@@ -38,6 +96,13 @@ Route::get('/programstudi', function () {
 Route::get('/semester', function () {
     return view('admin.semester');
 });
+Route::get('/jadwal', function () {
+    return view('pages.jadwal');
+});
+Route::get('/penilaian', function () {
+    return view('pages.penilaian');
+});
+
 
 Route::prefix('survei')->group(function () {
 
@@ -48,35 +113,9 @@ Route::prefix('survei')->group(function () {
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');
     });
-
-    Route::prefix('programstudi')->controller(ProgramstudiController::class)->group(function () {
+    Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
         Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
-    });
-
-    Route::prefix('kriteria')->controller(KriteriaController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
-    });
-
-    Route::prefix('semester')->controller(SemesterController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
-        Route::post('/toggle-active/{id}', 'toggleActive');
-    });
-
-    Route::prefix('dosen')->controller(DosenController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
+        Route::post('/create', 'testCalculation');
         Route::get('/get/{id}', 'getDataById');
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');

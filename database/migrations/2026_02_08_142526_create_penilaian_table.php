@@ -15,16 +15,15 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('nama_mahasiswa');
             $table->string('nim', 20);
-            $table->foreignUuid('jadwal_pengampu_id')->constrained('jadwal_pengampu')->onDelete('cascade');
+            $table->foreignUuid('kelas_id')->constrained('kelas')->onDelete('cascade');
             $table->foreignUuid('kriteria_id')->constrained('kriteria')->onDelete('cascade');
-            $table->integer('skor'); // 1–5
+            $table->integer('skor');
             $table->timestamps();
+
+            $table->unique(['nim', 'kelas_id', 'kriteria_id'], 'nim_kelas_kriteria_unique');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('penilaian');
