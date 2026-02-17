@@ -27,14 +27,12 @@ $(document).ready(function () {
     function validation() {
         $('#formKelas').validate({
             rules: {
-                kelas: { required: true },
                 semester_id: { required: true },
                 program_studi_id: { required: true },
                 dosen_id: { required: true },
 
             },
             messages: {
-                kelas: { required: "Kelas tidak boleh kosong" },
                 semester_id: { required: "Pilih semester" },
                 program_studi_id: { required: "Pilih program studi" },
                 dosen_id: { required: "Pilih dosen" },

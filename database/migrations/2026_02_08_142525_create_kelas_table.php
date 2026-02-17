@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignUuid('dosen_id')->constrained('dosen')->onDelete('cascade');
             $table->foreignUuid('program_studi_id')->constrained('program_studi')->onDelete('cascade');
             $table->foreignUuid('semester_id')->constrained('semester')->onDelete('cascade');
-            $table->string('kelas', 10);
             $table->timestamps();
         });
     }

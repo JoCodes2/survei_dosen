@@ -16,7 +16,6 @@ class JadwalPengampuModel extends Model
         'dosen_id',
         'program_studi_id',
         'semester_id',
-        'kelas',
         'created_at',
         'updated_at',
     ];

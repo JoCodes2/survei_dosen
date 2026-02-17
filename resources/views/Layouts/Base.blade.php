@@ -27,6 +27,7 @@
     <script>
         let appUrl = '{{ env('APP_URL') }}';
     </script>
+    @yield('styles')
   </head>
 
   <body>

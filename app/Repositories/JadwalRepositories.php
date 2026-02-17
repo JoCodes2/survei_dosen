@@ -32,12 +32,28 @@ class JadwalRepositories implements JadwalPengampuInterfaces
     public function createData(JadwalPengampuRequest $request)
     {
         try {
+            $exists = $this->jadwalPengampu->where('dosen_id', $request->dosen_id)
+                ->where('program_studi_id', $request->program_studi_id)
+                ->where('semester_id', $request->semester_id)
+                ->exists();
+
+            if ($exists) {
+                return $this->error(
+                    'Data dosen untuk program studi dan semester tersebut sudah ada.',
+                    409,
+                    null,
+                    class_basename($this),
+                    __FUNCTION__
+                );
+            }
+
             $data = new $this->jadwalPengampu;
             $data->dosen_id = $request->dosen_id;
             $data->program_studi_id = $request->program_studi_id;
             $data->semester_id = $request->semester_id;
-            $data->kelas = $request->kelas;
             $data->save();
+
+            return $this->success($data);
         } catch (\Throwable $th) {
             return $this->error(
                 $th->getMessage(),
@@ -59,12 +75,31 @@ class JadwalRepositories implements JadwalPengampuInterfaces
     public function updateData(JadwalPengampuRequest $request, $id)
     {
         try {
-            $data = $this->jadwalPengampu::find($id);
+            // 1. Cek apakah ada data LAIN yang memiliki kombinasi yang sama
+            $exists = $this->jadwalPengampu->where('dosen_id', $request->dosen_id)
+                ->where('program_studi_id', $request->program_studi_id)
+                ->where('semester_id', $request->semester_id)
+                ->where('id', '!=', $id) // PENTING: Kecualikan data yang sedang diedit
+                ->exists();
+
+            if ($exists) {
+                return $this->error(
+                    'Data dosen untuk program studi dan semester tersebut sudah ada pada data lain.',
+                    409,
+                    null,
+                    class_basename($this),
+                    __FUNCTION__
+                );
+            }
+
+            // 2. Cari data berdasarkan ID
+            $data = $this->jadwalPengampu->findOrFail($id);
             $data->dosen_id = $request->dosen_id;
             $data->program_studi_id = $request->program_studi_id;
             $data->semester_id = $request->semester_id;
-            $data->kelas = $request->kelas;
             $data->save();
+
+            return $this->success($data);
         } catch (\Throwable $th) {
             return $this->error(
                 $th->getMessage(),

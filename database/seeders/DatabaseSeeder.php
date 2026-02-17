@@ -5,76 +5,132 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $now = Carbon::now();
-
-        // ===================== DOSEN =====================
-        $dosenIds = [
-            'd1' => Str::uuid(),
-            'd2' => Str::uuid(),
-            'd3' => Str::uuid(),
-            'd4' => Str::uuid(),
-            'd5' => Str::uuid(),
-            'd6' => Str::uuid(),
-            'd7' => Str::uuid(),
-            'd8' => Str::uuid(),
-            'd9' => Str::uuid(),
-        ];
-
-        DB::table('dosen')->insert([
-            ['id' => $dosenIds['d1'], 'nidn' => '00101', 'nama_lengkap' => 'Bonitalia, S.Pd., M.Pd', 'email' => 'bonitalia@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d2'], 'nidn' => '00102', 'nama_lengkap' => 'Muh. Andika, S.Sos, M.A.P', 'email' => 'andika@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d3'], 'nidn' => '00103', 'nama_lengkap' => 'Ir. Wildan, S.Kom., M.Kom', 'email' => 'wildan@kampus.ac.id', 'jabatan_fungsional' => 'Lektor', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d4'], 'nidn' => '00104', 'nama_lengkap' => 'Anwar S. Panyili, S.Kom., M.Kom', 'email' => 'anwar@kampus.ac.id', 'jabatan_fungsional' => 'Lektor', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d5'], 'nidn' => '00105', 'nama_lengkap' => 'Supardi Ngareng, S.Kom., M.Kom', 'email' => 'supardi@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d6'], 'nidn' => '00106', 'nama_lengkap' => 'Agus Romadhona, S.Kom., M.Kom', 'email' => 'agus@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d7'], 'nidn' => '00107', 'nama_lengkap' => 'Ir. Ulfiah, S.Pd., M.Sc', 'email' => 'ulfiah@kampus.ac.id', 'jabatan_fungsional' => 'Lektor', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d8'], 'nidn' => '00108', 'nama_lengkap' => 'Sukardi, S.Kom., M.Kom', 'email' => 'sukardi@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $dosenIds['d9'], 'nidn' => '00109', 'nama_lengkap' => 'Moh. Risaldi, S.Kom., M.Kom', 'email' => 'risaldi@kampus.ac.id', 'jabatan_fungsional' => 'Asisten Ahli', 'created_at' => $now, 'updated_at' => $now],
-        ]);
-
-        // ===================== PROGRAM STUDI =====================
-        $prodiTI = Str::uuid();
-        $prodiSI = Str::uuid();
-
+        // 1. Data Master (Prodi, Semester)
+        $prodiId = Str::uuid();
         DB::table('program_studi')->insert([
-            ['id' => $prodiTI, 'kode_prodi' => 'TI', 'nama_prodi' => 'Teknik Informatika',   'created_at' => $now, 'updated_at' => $now],
-            ['id' => $prodiSI, 'kode_prodi' => 'SI', 'nama_prodi' => 'Sistem Informasi',  'created_at' => $now, 'updated_at' => $now],
+            'id' => $prodiId,
+            'kode_prodi' => 'TI',
+            'nama_prodi' => 'Teknik Informatika',
         ]);
 
-        // ===================== SEMESTER =====================
-        $semesterIds = [
-            'sem1' => Str::uuid(),
-            'sem3' => Str::uuid(),
-            'sem5' => Str::uuid(),
-            'sem7' => Str::uuid(),
+        $semesterId = Str::uuid();
+        DB::table('semester')->insert([
+            'id' => $semesterId,
+            'nama_semester' => 'Semester 1',
+            'tahun_akademik' => '2025/2026',
+            'is_active' => true,
+        ]);
+
+        // 2. Kriteria (Bobot & Jenis)
+        $kC1 = Str::uuid();
+        $kC2 = Str::uuid();
+        $kC3 = Str::uuid();
+        $kC4 = Str::uuid();
+
+        DB::table('kriteria')->insert([
+            ['id' => $kC1, 'kode_kriteria' => 'C1', 'nama_kriteria' => 'Frekuensi komunikasi', 'jenis' => 'benefit', 'bobot' => 0.2],
+            ['id' => $kC2, 'kode_kriteria' => 'C2', 'nama_kriteria' => 'Bimbingan perkuliahan', 'jenis' => 'benefit', 'bobot' => 0.1],
+            ['id' => $kC3, 'kode_kriteria' => 'C3', 'nama_kriteria' => 'Kecepatan respons', 'jenis' => 'benefit', 'bobot' => 0.3],
+            ['id' => $kC4, 'kode_kriteria' => 'C4', 'nama_kriteria' => 'Kepuasan mahasiswa', 'jenis' => 'benefit', 'bobot' => 0.4],
+        ]);
+
+        $criteriaIds = [$kC1, $kC2, $kC3, $kC4];
+
+        // 3. Dosen & Kelas (5 Dosen, 5 Kelas)
+        $dosenList = [
+            ['nama' => 'Bonitalia, S.Pd., M.Pd', 'email' => 'boni@univ.ac.id'], // A1
+            ['nama' => 'Muh. Andika. S.Sos, M.A.P', 'email' => 'andika@univ.ac.id'], // A2
+            ['nama' => 'Ir. Wildan, S.Kom., M.Kom', 'email' => 'wildan@univ.ac.id'], // A3
+            ['nama' => 'Anwar S. Panyili, S.Kom., M.Kom', 'email' => 'anwar@univ.ac.id'], // A4
+            ['nama' => 'Supardi Ngareng, S.Kom., M.Kom', 'email' => 'supardi@univ.ac.id'], // A5
         ];
 
-        DB::table('semester')->insert([
-            ['id' => $semesterIds['sem1'], 'nama_semester' => '2026/2027 Ganjil - Smt 1', 'tahun_akademik' => '2026/2027', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $semesterIds['sem3'], 'nama_semester' => '2026/2027 Ganjil - Smt 3', 'tahun_akademik' => '2026/2027', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $semesterIds['sem5'], 'nama_semester' => '2026/2027 Ganjil - Smt 5', 'tahun_akademik' => '2026/2027', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-            ['id' => $semesterIds['sem7'], 'nama_semester' => '2026/2027 Ganjil - Smt 7', 'tahun_akademik' => '2026/2027', 'is_active' => true, 'created_at' => $now, 'updated_at' => $now],
-        ]);
+        // Data skor yang disesuaikan dengan contoh kasus (Fleksibel)
+        $skorDataByDosen = [
+            // A1: 3 Responden
+            'A1' => [
+                ['MHS001', 'Mahasiswa R1', [4, 4, 3, 4]],
+                ['MHS002', 'Mahasiswa R2', [5, 4, 4, 5]],
+                ['MHS003', 'Mahasiswa R3', [4, 4, 3, 4]],
+            ],
+            // A2: 3 Responden
+            'A2' => [
+                ['MHS001', 'Mahasiswa R1', [3, 3, 5, 3]],
+                ['MHS002', 'Mahasiswa R2', [4, 3, 5, 3]],
+                ['MHS003', 'Mahasiswa R3', [3, 3, 4, 3]],
+            ],
+            // A3: 3 Responden
+            'A3' => [
+                ['MHS001', 'Mahasiswa R1', [5, 3, 5, 3]],
+                ['MHS002', 'Mahasiswa R2', [4, 4, 5, 3]],
+                ['MHS003', 'Mahasiswa R3', [4, 3, 4, 3]],
+            ],
+            // A4: 3 Responden
+            'A4' => [
+                ['MHS001', 'Mahasiswa R1', [4, 3, 3, 4]],
+                ['MHS002', 'Mahasiswa R2', [4, 4, 4, 5]],
+                ['MHS003', 'Mahasiswa R3', [4, 4, 5, 4]],
+            ],
+            // A5: 2 Responden saja (sesuai contoh kendala Anda)
+            'A5' => [
+                ['MHS001', 'Mahasiswa R1', [3, 3, 3, 5]],
+                ['MHS002', 'Mahasiswa R2', [5, 4, 5, 5]],
+                ['MHS002', 'Mahasiswa R2', [3, 4, 3, 4]],
+            ],
+        ];
 
-        // ===================== JADWAL PENGAMPU =====================
-        DB::table('kelas')->insert([
-            // TI
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d1'], 'program_studi_id' => $prodiTI, 'semester_id' => $semesterIds['sem1'], 'kelas' => 'TI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d2'], 'program_studi_id' => $prodiTI, 'semester_id' => $semesterIds['sem3'], 'kelas' => 'TI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d3'], 'program_studi_id' => $prodiTI, 'semester_id' => $semesterIds['sem5'], 'kelas' => 'TI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d4'], 'program_studi_id' => $prodiTI, 'semester_id' => $semesterIds['sem7'], 'kelas' => 'TI 1.1', 'created_at' => $now, 'updated_at' => $now],
+        $dataPenilaian = [];
 
-            // SI
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d5'], 'program_studi_id' => $prodiSI, 'semester_id' => $semesterIds['sem1'], 'kelas' => 'SI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d6'], 'program_studi_id' => $prodiSI, 'semester_id' => $semesterIds['sem3'], 'kelas' => 'SI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d7'], 'program_studi_id' => $prodiSI, 'semester_id' => $semesterIds['sem5'], 'kelas' => 'SI 1.1', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => Str::uuid(), 'dosen_id' => $dosenIds['d8'], 'program_studi_id' => $prodiSI, 'semester_id' => $semesterIds['sem7'], 'kelas' => 'SI 1.1', 'created_at' => $now, 'updated_at' => $now],
-        ]);
+        foreach ($dosenList as $index => $dosenData) {
+            // Insert Dosen
+            $dosenId = Str::uuid();
+            DB::table('dosen')->insert([
+                'id' => $dosenId,
+                'nama_lengkap' => $dosenData['nama'],
+                'email' => $dosenData['email'],
+            ]);
+
+            // Insert Kelas untuk Dosen tersebut
+            $kelasId = Str::uuid();
+            DB::table('kelas')->insert([
+                'id' => $kelasId,
+                'dosen_id' => $dosenId,
+                'program_studi_id' => $prodiId,
+                'semester_id' => $semesterId,
+            ]);
+
+            // Mengambil key 'A1' - 'A5'
+            $dosenKey = 'A' . ($index + 1);
+
+            // Loop berdasarkan jumlah data survei yang ada
+            if (isset($skorDataByDosen[$dosenKey])) {
+                foreach ($skorDataByDosen[$dosenKey] as $survei) {
+                    $nim = $survei[0];
+                    $namaMhs = $survei[1];
+                    $skorKriteria = $survei[2];
+
+                    foreach ($criteriaIds as $critIndex => $criteriaId) {
+                        $dataPenilaian[] = [
+                            'id' => Str::uuid(),
+                            'nama_mahasiswa' => $namaMhs,
+                            'nim' => $nim,
+                            'kelas_id' => $kelasId,
+                            'kriteria_id' => $criteriaId,
+                            'skor' => $skorKriteria[$critIndex],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Insert semua data penilaian sekaligus
+        DB::table('penilaian')->insert($dataPenilaian);
     }
 }
