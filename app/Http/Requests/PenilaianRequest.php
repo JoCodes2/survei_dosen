@@ -1,5 +1,4 @@
 <?php
-// app/Http/Requests/PenilaianRequest.php
 
 namespace App\Http\Requests;
 
@@ -8,26 +7,37 @@ use App\Models\PenilaianModel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Str; // Import Str
 
 class PenilaianRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'nama_mahasiswa' => 'required|string|max:255',
+            // --- REVISI VALIDASI NAMA ---
+            'nama_mahasiswa' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $nim = $this->input('nim');
+                    if (!$nim) return;
+
+                    $existingSurvey = PenilaianModel::where('nim', $nim)->first();
+
+                    if ($existingSurvey) {
+                        if (Str::lower(trim($existingSurvey->nama_mahasiswa)) !== Str::lower(trim($value))) {
+                            $fail('Nama mahasiswa tidak sesuai dengan survei sebelumnya untuk NIM ' . $nim . '. (Terdaftar: ' . $existingSurvey->nama_mahasiswa . ')');
+                        }
+                    }
+                },
+            ],
+            // ---------------------------------
             'nim'            => 'required|string|max:20',
             'kelas_id'       => [
                 'required',
@@ -40,7 +50,7 @@ class PenilaianRequest extends FormRequest
                         ->exists();
 
                     if ($exists) {
-                        $fail('Anda sudah pernah melakukan survei untuk kelas ini.');
+                        $fail('Anda sudah pernah melakukan survei untuk dosen ini pada semester ini.');
                     }
                 },
             ],

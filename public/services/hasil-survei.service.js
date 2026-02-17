@@ -96,22 +96,12 @@ class HasilSurveiController {
                 $('#filter_program_studi').html(options);
             }
 
-            const resJadwal = await this.ajaxRequest(this.apiJadwalUrl, 'GET');
-            if (resJadwal.code === 200) {
-                this.allJadwalData = resJadwal.data;
-                this.updateKelasDropdown();
-            }
-
         } catch (error) {
             console.error('Error loading filters:', error);
         }
     }
 
     bindEvents() {
-        $('#filter_program_studi, #filter_semester').on('change', () => {
-            this.updateKelasDropdown();
-        });
-
         $('#btnTampilkan').on('click', (e) => {
             e.preventDefault();
             this.applyFilter();
@@ -152,39 +142,15 @@ class HasilSurveiController {
         });
     }
 
-    updateKelasDropdown() {
-        const prodiId = $('#filter_program_studi').val();
-        const semesterId = $('#filter_semester').val();
-        let filteredJadwal = this.allJadwalData;
-
-        if (prodiId) filteredJadwal = filteredJadwal.filter(item => item.program_studi_id === prodiId);
-        if (semesterId) filteredJadwal = filteredJadwal.filter(item => item.semester_id === semesterId);
-
-        const uniqueKelasMap = new Map();
-        filteredJadwal.forEach(item => {
-            if (!uniqueKelasMap.has(item.kelas)) {
-                uniqueKelasMap.set(item.kelas, item.id);
-            }
-        });
-
-        let options = '<option value="">-- Semua Kelas --</option>';
-        uniqueKelasMap.forEach((id, namaKelas) => {
-            options += `<option value="${id}">${namaKelas}</option>`;
-        });
-        $('#filter_kelas').html(options);
-    }
-
     applyFilter() {
         const prodiId = $('#filter_program_studi').val();
         const semesterId = $('#filter_semester').val();
-        const kelasId = $('#filter_kelas').val();
 
         let filteredData = this.allSurveiData;
 
         // Logika filter fleksibel dengan pengecekan relasi aman
         if (prodiId) filteredData = filteredData.filter(item => item.kelas && item.kelas.program_studi_id === prodiId);
         if (semesterId) filteredData = filteredData.filter(item => item.kelas && item.kelas.semester_id === semesterId);
-        if (kelasId) filteredData = filteredData.filter(item => item.kelas_id === kelasId);
 
         this.filteredData = filteredData;
         this.currentPage = 1;
@@ -238,7 +204,7 @@ class HasilSurveiController {
                     Silakan pilih filter lain atau coba kembali nanti
                 </div>
                 <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="$('#filter_program_studi, #filter_semester, #filter_kelas').val('').trigger('change'); $('#btnTampilkan').click();">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="$('#filter_program_studi, #filter_semester').val('').trigger('change'); $('#btnTampilkan').click();">
                         <i class="fa fa-undo mr-2"></i>Reset Filter
                     </button>
                 </div>

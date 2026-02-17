@@ -3,6 +3,7 @@
 use App\Http\Controllers\CMS\DosenController;
 use App\Http\Controllers\CMS\JadwalPengampuController;
 use App\Http\Controllers\CMS\KriteriaController;
+use App\Http\Controllers\CMS\MarcosController;
 use App\Http\Controllers\CMS\PenilaianController;
 use App\Http\Controllers\CMS\ProgramstudiController;
 use App\Http\Controllers\CMS\SemesterController;
@@ -104,6 +105,13 @@ Route::prefix('survei')->group(function () {
     Route::prefix('user')->controller(UserController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+    Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'testCalculation');
         Route::get('/get/{id}', 'getDataById');
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');

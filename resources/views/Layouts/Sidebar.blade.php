@@ -63,7 +63,7 @@
            <li class="menu-item {{ request()->is('jadwal') ? 'active' : '' }}">
             <a href="/jadwal" class="menu-link">
                 <i class="menu-icon fa-solid fa-person-chalkboard"></i>
-                <div>Kelas Dosen</div>
+                <div>Penugasan  Dosen</div>
             </a>
         </li>
         <li class="menu-item {{ request()->is('kriteria') ? 'active' : '' }}">

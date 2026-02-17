@@ -6,7 +6,7 @@
     <x-base-header title="Manajemen Kelas Dosen" icon="fa-solid fa-person-chalkboard">
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-primary btn-sm" id="btnTambahKelas">
-                <i class="fa fa-plus"></i> Tambah Kelas
+                <i class="fa fa-plus"></i> Tambah Penugasan Dosen
             </button>
         </div>
     </x-base-header>
@@ -14,7 +14,7 @@
     <x-base-body>
         <div class="alert alert-secondary border-0 small mb-4">
             <i class="fa-solid fa-circle-info mr-1"></i>
-            Halaman ini digunakan untuk mengatur data kelas yang diampu oleh dosen.
+            Halaman ini digunakan untuk mengatur data penugasan  dosen.
         </div>
 
         {{-- Section Filter --}}
@@ -43,7 +43,7 @@
 
         @php
             // Menyesuaikan header tabel
-            $headers = ['No', 'Kelas', 'Program Studi', 'Semester','Dosen', 'Aksi'];
+            $headers = ['No', 'Program Studi', 'Semester','Dosen', 'Aksi'];
         @endphp
 
         <x-base-table :headers="$headers" id="kelasTable">
@@ -63,11 +63,6 @@
     <form id="formKelas" method="POST">
         @csrf
         <input type="hidden" name="id" id="id">
-        <div class="mb-3">
-            <label for="kelas" class="form-label font-weight-bold">Kelas</label>
-            <input type="text" name="kelas" id="kelas" class="form-control" placeholder="Contoh TI 1.1, SI 1.1">
-            <small class="text-danger error-msg" id="error-kelas"></small>
-        </div>
         <div class="mb-3">
             <label for="dosen_id" class="form-label font-weight-bold">Dosen</label>
             <select class="form-control select2" id="dosen_id" name="dosen_id" style="width: 100%;">

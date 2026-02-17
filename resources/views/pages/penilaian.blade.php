@@ -15,28 +15,21 @@
         {{-- Form Filter --}}
         <form id="formFilterData">
             <div class="row mb-3 bg-light p-2 rounded">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="filter_program_studi" class="form-label font-weight-bold small">Program Studi</label>
                     <select class="form-control form-control-sm" id="filter_program_studi" name="program_studi_id" required>
                         <option value="">-- Pilih Prodi --</option>
                         {{-- Data Prodi dari API --}}
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="filter_semester" class="form-label font-weight-bold small">Semester</label>
                     <select class="form-control form-control-sm" id="filter_semester" name="semester_id" required>
                         <option value="">-- Pilih Semester --</option>
                         {{-- Data Semester dari API --}}
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <label for="filter_kelas" class="form-label font-weight-bold small">Kelas</label>
-                    <select class="form-control form-control-sm" id="filter_kelas" name="kelas_id">
-                        <option value="">-- Semua Kelas --</option>
-                        {{-- Data Kelas dari API --}}
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
+                <div class="col-md-4 d-flex align-items-end">
                     <div class="btn-group w-100" role="group">
                         <button type="submit" class="btn btn-secondary btn-sm" id="btnTampilkan">
                             <i class="fa-solid fa-eye"></i> Tampilkan

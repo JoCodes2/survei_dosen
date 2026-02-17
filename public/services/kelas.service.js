@@ -14,8 +14,18 @@ class kelasService {
                 data,
                 processData: false,
                 contentType: false,
-                success: (response) => resolve(response),
-                error: (error) => reject(error),
+                success: (response) => {
+                    // Pengecekan status di dalam body respons
+                    if (response.code === 409) {
+                        reject({ status: 409, responseJSON: response }); // Lempar ke CATCH
+                    } else {
+                        resolve(response);
+                    }
+                },
+                error: (xhr) => {
+                    // Untuk error teknis seperti 500, 422, dll
+                    reject(xhr); // Lempar ke CATCH
+                }
             });
         });
     }
@@ -99,7 +109,7 @@ class kelasService {
                     emptyTable: `
                         <div class="py-5 text-muted text-center">
                             <i class="fa-solid fa-chalkboard fa-3x mb-3"></i><br>
-                            Data kelas tidak ditemukan .
+                            Data tidak ditemukan .
                         </div>`
                 }
             });
@@ -136,7 +146,6 @@ class kelasService {
 
                 datatable.row.add([
                     `<div class="text-center">${index + 1}</div>`,
-                    `<div class="text-center fw-bold text-primary">${item.kelas}</div>`,
                     `<div>
                         <strong>${item.dosen ? item.dosen.nama_lengkap : '-'}</strong><br>
                         <small class="text-muted">NIDN: ${item.dosen ? item.dosen.nidn : '-'}</small>
@@ -160,8 +169,6 @@ class kelasService {
 
         try {
             const formData = new FormData(formElement);
-
-
             submitButton.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Loading...');
 
             let responseData;
@@ -172,6 +179,7 @@ class kelasService {
                 responseData = await this.ajaxRequest(`${appUrl}/survei/jadwal/create`, 'POST', formData);
             }
 
+            // --- HANYA JIKA SUKSES (200-299) ---
             successAlert().then(() => {
                 $('#modalTambahKelas').modal('hide');
                 realoadBrowser();
@@ -181,21 +189,37 @@ class kelasService {
         } catch (error) {
             submitButton.attr('disabled', false).html(originalText);
 
-            if (error.status === 422 || error.response?.status === 422) {
-                warningAlert();
+            // Log untuk debug, lihat struktur error di console
+            console.log("Error object caught:", error);
+
+            // Ambil status dan pesan secara aman
+            const status = error.status || error.responseJSON?.code || error.responseJSON?.status;
+            const message = error.responseJSON?.message || 'Terjadi kesalahan.';
+
+            // --- PENANGANAN 409 ---
+            if (status === 409) {
+                warningAlert(message);
+                return; // --- PENTING: Hentikan eksekusi di sini! ---
+            }
+
+            // --- PENANGANAN 422 ---
+            else if (status === 422) {
+                warningAlert('Validasi gagal.');
                 const errors = error.responseJSON?.data ?? error.response?.data;
                 const validator = $('#formKelas').validate();
-
                 const errorList = {};
                 $.each(errors, function (field, messages) {
                     errorList[field] = messages[0];
                 });
                 validator.showErrors(errorList);
-                return;
+                return; // --- PENTING: Hentikan eksekusi di sini! ---
             }
 
-            console.error("Detail Error:", error);
-            errorAlert();
+            // --- ERROR LAINNYA ---
+            else {
+                errorAlert();
+                console.error("Detail Error:", error);
+            }
         }
     }
 
@@ -210,7 +234,6 @@ class kelasService {
             $('#modalTambahKelas').modal('show');
 
             $('#id').val(item.id);
-            $('#kelas').val(item.kelas);
             $('#semester_id').val(item.semester_id);
             $('#program_studi_id').val(item.program_studi_id);
             $('#dosen_id').val(item.dosen_id);

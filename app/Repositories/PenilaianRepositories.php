@@ -7,6 +7,7 @@ use App\Interfaces\PenilaianInterfaces;
 use App\Models\PenilaianModel;
 use App\Traits\HttpResponseTraits;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PenilaianRepositories implements PenilaianInterfaces
 {
@@ -42,6 +43,7 @@ class PenilaianRepositories implements PenilaianInterfaces
 
             foreach ($dataRequest['skor_kriteria'] as $kriteriaId => $skor) {
                 $surveiItems[] = [
+                    'id'             => (string) Str::uuid(),
                     'nama_mahasiswa' => $dataRequest['nama_mahasiswa'],
                     'nim'            => $dataRequest['nim'],
                     'kelas_id'       => $dataRequest['kelas_id'],
