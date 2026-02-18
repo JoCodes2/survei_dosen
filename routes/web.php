@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 
 Route::get('/login', function () {
-    return view('Auth.login');
+    return view('auth.login');
 })->name('login')->middleware('guest');
 Route::post('survei/login', [LoginController::class, 'login']);
 
@@ -109,6 +109,9 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
     Route::get('/penilaian', function () {
         return view('pages.penilaian');
+    });
+    Route::get('/history', function () {
+        return view('pages.hasil-penilaian');
     });
 
 
