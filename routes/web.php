@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CMS\DosenController;
+use App\Http\Controllers\CMS\HasilMarcos;
 use App\Http\Controllers\CMS\JadwalPengampuController;
 use App\Http\Controllers\CMS\KriteriaController;
 use App\Http\Controllers\CMS\MarcosController;
@@ -102,6 +103,9 @@ Route::get('/jadwal', function () {
 Route::get('/penilaian', function () {
     return view('pages.penilaian');
 });
+Route::get('/history', function () {
+    return view('pages.hasil-penilaian');
+});
 
 
 Route::prefix('survei')->group(function () {
@@ -116,6 +120,14 @@ Route::prefix('survei')->group(function () {
     Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
         Route::get('/', 'getAllData');
         Route::post('/create', 'testCalculation');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+    Route::prefix('history')->controller(HasilMarcos::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get-top-dosen', 'getTopDosen');
         Route::get('/get/{id}', 'getDataById');
         Route::post('/update/{id}', 'updateData');
         Route::delete('/delete/{id}', 'deleteData');

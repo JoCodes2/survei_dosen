@@ -78,6 +78,12 @@
                 <div>Hasil Survei</div>
             </a>
         </li>
+          <li class="menu-item {{ request()->is('history') ? 'active' : '' }}">
+            <a href="/history" class="menu-link">
+                <i class="menu-icon fa-solid fa-history"></i>
+                <div>History</div>
+            </a>
+        </li>
 
     </ul>
 </aside>

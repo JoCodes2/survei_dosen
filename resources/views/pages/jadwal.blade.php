@@ -3,7 +3,7 @@
 @section('content')
 <div class="card">
 
-    <x-base-header title="Manajemen Kelas Dosen" icon="fa-solid fa-person-chalkboard">
+    <x-base-header title="Manajemen Penugasan Dosen" icon="fa-solid fa-person-chalkboard">
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-primary btn-sm" id="btnTambahKelas">
                 <i class="fa fa-plus"></i> Tambah Penugasan Dosen

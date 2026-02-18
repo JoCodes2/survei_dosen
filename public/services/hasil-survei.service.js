@@ -8,30 +8,147 @@ class HasilSurveiController {
         this.apiPenilaianUrl = `${appUrl}/survei/penilaian/`;
         this.apiSemesterUrl = `${appUrl}/survei/semester/`;
         this.apiProdiUrl = `${appUrl}/survei/programstudi/`;
-        this.apiKriteriaUrl = `${appUrl}/survei/kriteria/`; // Tambahkan endpoint kriteria
+        this.apiKriteriaUrl = `${appUrl}/survei/kriteria/`;
 
         this.allJadwalData = [];
         this.allSurveiData = [];
-        this.allKriteriaData = []; // Untuk menyimpan data kriteria
+        this.allKriteriaData = [];
 
-        // State untuk pagination
         this.currentPage = 1;
         this.pageSize = 10;
         this.filteredData = [];
     }
 
-    ajaxRequest(url, method, data = null) {
+    ajaxRequest(url, method, data = null, isJson = false) {
         return new Promise((resolve, reject) => {
             $.ajax({
                 url,
                 method,
-                data,
-                processData: false,
-                contentType: false,
-                success: (response) => resolve(response),
-                error: (error) => reject(error),
+                data: isJson ? JSON.stringify(data) : data,
+                processData: isJson ? false : true,
+                contentType: isJson ? 'application/json' : 'application/x-www-form-urlencoded; charset=UTF-8',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: (response) => {
+                    resolve(response);
+                },
+                error: (xhr) => {
+                    reject(xhr);
+                }
             });
         });
+    }
+
+    async hitungMarcos() {
+        const prodiId = $('#filter_program_studi').val();
+        const semesterId = $('#filter_semester').val();
+
+        if (!prodiId || !semesterId) {
+            warningAlert('Silakan pilih Program Studi dan Semester!');
+            return;
+        }
+
+        const submitButton = $('#btnHitungMarcos');
+        const originalText = submitButton.html();
+
+        try {
+            submitButton.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menghitung...');
+
+            const url = `${appUrl}/survei/marcos/create`;
+            const data = { prodi_id: prodiId, semester_id: semesterId };
+
+            const response = await this.ajaxRequest(url, 'POST', data, true);
+            console.log(response);
+
+            if (response.status === 'success') {
+                this.renderRankingTable(response.data);
+                $('#hasilMarcosSection').show();
+                $('html, body').animate({ scrollTop: $("#hasilMarcosSection").offset().top }, 500);
+                successAlert('Perhitungan Selesai!');
+
+                window.rankingDataGlobal = response.data;
+            } else {
+                throw new Error(response.message);
+            }
+
+        } catch (error) {
+            console.error(error);
+            warningAlert(error.responseJSON?.message || 'Gagal menghitung.');
+        } finally {
+            submitButton.attr('disabled', false).html(originalText);
+        }
+    }
+
+    renderRankingTable(data) {
+        const tbody = $('#rankingBody');
+        tbody.empty();
+
+        if (!data || data.length === 0) {
+            tbody.html('<tr><td colspan="3" class="text-center">Tidak ada data.</td></tr>');
+            return;
+        }
+        data.sort((a, b) => b['F(Ki)'] - a['F(Ki)']);
+
+        data.forEach((item, index) => {
+            const row = `
+            <tr>
+                <td class="text-center font-weight-bold">${index + 1}</td>
+                <td>${item.dosen}</td>
+                <td class="text-center font-weight-bold text-primary">
+                    ${parseFloat(item['F(Ki)']).toFixed(2)}
+                </td>
+            </tr>
+        `;
+            tbody.append(row);
+        });
+    }
+
+    // public/services/survei.service.js
+
+    async simpanHistory() {
+        if (!window.rankingDataGlobal || window.rankingDataGlobal.length === 0) {
+            warningAlert('Tidak ada data ranking untuk disimpan.');
+            return;
+        }
+
+        confirmAlert1(
+            'Simpan History?',
+            'Data ranking ini akan disimpan ke dalam history.',
+            async () => {
+
+                const payload = {
+                    program_studi_id: $('#filter_program_studi').val(),
+                    semester_id: $('#filter_semester').val(),
+                    data_ranking: window.rankingDataGlobal
+                };
+
+                const submitButton = $('#btnSimpanHistory');
+                const originalText = submitButton.html();
+
+                try {
+                    loadingAllert('Menyimpan', 'Sedang menyimpan data ke history...');
+                    submitButton.attr('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
+
+                    const url = `${appUrl}/survei/history/create`;
+                    const response = await this.ajaxRequest(url, 'POST', payload, true);
+
+                    if (response.status === 'success') {
+                        successAlert('History berhasil disimpan.').then(() => {
+                            realoadBrowser();
+                        });
+                    } else {
+                        throw new Error(response.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    Swal.close();
+                    warningAlert('Gagal menyimpan history.');
+                } finally {
+                    submitButton.attr('disabled', false).html(originalText);
+                }
+            }
+        );
     }
 
     async init() {
@@ -157,11 +274,7 @@ class HasilSurveiController {
         this.renderMatrixTable(filteredData);
     }
 
-    hitungMarcos() {
-        // Implementasi perhitungan MARCOS
-        console.log('Menghitung MARCOS...');
-        // TODO: Implementasi logika MARCOS
-    }
+
 
     searchData(data, searchTerm) {
         if (!searchTerm) return data;
