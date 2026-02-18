@@ -159,6 +159,8 @@
                     processData: false,
 
                     success: function(response) {
+                        console.log(response);
+
                         Swal.close();
 
                         // ✅ SUCCESS SAJA

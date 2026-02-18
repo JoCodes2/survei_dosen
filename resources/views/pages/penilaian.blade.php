@@ -115,12 +115,17 @@
         </div>
         {{-- End Section 1 --}}
 
-        {{-- Section 2: Tabel Hasil Perhitungan MARCOS (Hidden by Default) --}}
         <div id="hasilMarcosSection" style="display: none;">
             <hr class="my-4">
-            <h5 class="font-weight-bold text-primary mb-3">
-                <i class="fa-solid fa-trophy"></i> Hasil Perhitungan MARCOS (Ranking)
-            </h5>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="font-weight-bold text-primary mb-0">
+                    <i class="fa-solid fa-trophy"></i> Hasil Perhitungan MARCOS (Ranking)
+                </h5>
+                <button type="button" class="btn btn-success btn-sm" id="btnSimpanHistory">
+                    <i class="fa-solid fa-save"></i> Simpan History
+                </button>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered table-striped table-hover table-sm" id="rankingTable">
                     <thead class="thead-light">
@@ -136,7 +141,6 @@
                 </table>
             </div>
         </div>
-        {{-- End Section 2 --}}
 
     </x-base-body>
 </div>

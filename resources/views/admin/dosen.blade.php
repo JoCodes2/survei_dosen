@@ -120,7 +120,7 @@
                         $.each(response.data, function(index, item) {
                             tableBody += "<tr>";
                             tableBody += "<td>" + (index + 1) + "</td>";
-                            tableBody += "<td>" + item.nidn + "</td>";
+                            tableBody += "<td>" + (item.nidn ?? '-') + "</td>";
                             tableBody += "<td>" + item.nama_lengkap + "</td>";
                             tableBody += "<td>" + item.email + "</td>";
                             tableBody += "<td>" + showX(item.jabatan_fungsional) + "</td>";

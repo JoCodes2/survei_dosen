@@ -36,12 +36,15 @@
             <span class="menu-header-text">Data Master</span>
         </li>
 
-        <li class="menu-item {{ request()->is('user') ? 'active' : '' }}">
-            <a href="/user" class="menu-link">
-                <i class="menu-icon fa-solid fa-user-gear"></i>
-                <div>Pengguna</div>
-            </a>
-        </li>
+        {{-- Cek apakah user sudah login dan apakah role-nya admin --}}
+        @if(Auth::check() && Auth::user()->role === 'admin')
+            <li class="menu-item {{ request()->is('user') ? 'active' : '' }}">
+                <a href="/user" class="menu-link">
+                    <i class="menu-icon fa-solid fa-user-gear"></i>
+                    <div>Pengguna</div>
+                </a>
+            </li>
+        @endif
         <li class="menu-item {{ request()->is('dosen') ? 'active' : '' }}">
             <a href="/dosen" class="menu-link">
                 <i class="menu-icon fa-solid fa-chalkboard-user"></i>
@@ -76,6 +79,12 @@
             <a href="/penilaian" class="menu-link">
                 <i class="menu-icon fa-solid fa-poll-h"></i>
                 <div>Hasil Survei</div>
+            </a>
+        </li>
+          <li class="menu-item {{ request()->is('history') ? 'active' : '' }}">
+            <a href="/history" class="menu-link">
+                <i class="menu-icon fa-solid fa-history"></i>
+                <div>History</div>
             </a>
         </li>
 
