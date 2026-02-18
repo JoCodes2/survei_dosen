@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CMS\DosenController;
 use App\Http\Controllers\CMS\HasilMarcos;
 use App\Http\Controllers\CMS\JadwalPengampuController;
@@ -18,9 +19,13 @@ Route::get('/', function () {
     return view('ui.penilaian');
 });
 
+
 Route::get('/login', function () {
-    return view('auth.login');
-});
+    return view('Auth.login');
+})->name('login')->middleware('guest');
+Route::post('survei/login', [LoginController::class, 'login']);
+
+
 Route::prefix('survei')->group(
     function () {
 
@@ -74,62 +79,65 @@ Route::prefix('survei')->group(
     }
 );
 
-// route masukan ke auth
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-});
-Route::get('/user', function () {
-    return view('admin.user');
-});
-
-Route::get('/dosen', function () {
-    return view('admin.dosen');
-});
-
-Route::get('/kriteria', function () {
-    return view('admin.kriteria');
-});
-
-Route::get('/programstudi', function () {
-    return view('admin.programstudi');
-});
-
-Route::get('/semester', function () {
-    return view('admin.semester');
-});
-Route::get('/jadwal', function () {
-    return view('pages.jadwal');
-});
-Route::get('/penilaian', function () {
-    return view('pages.penilaian');
-});
-Route::get('/history', function () {
-    return view('pages.hasil-penilaian');
-});
-
-
-Route::prefix('survei')->group(function () {
-
-    Route::prefix('user')->controller(UserController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
+Route::middleware(['auth', 'web'])->group(function () {
+    // route web
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
     });
-    Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'testCalculation');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
+
+    Route::get('/user', function () {
+        return view('admin.user');
     });
-    Route::prefix('history')->controller(HasilMarcos::class)->group(function () {
-        Route::get('/', 'getAllData');
-        Route::post('/create', 'createData');
-        Route::get('/get-top-dosen', 'getTopDosen');
-        Route::get('/get/{id}', 'getDataById');
-        Route::post('/update/{id}', 'updateData');
-        Route::delete('/delete/{id}', 'deleteData');
+
+    Route::get('/dosen', function () {
+        return view('admin.dosen');
     });
+
+    Route::get('/kriteria', function () {
+        return view('admin.kriteria');
+    });
+
+    Route::get('/programstudi', function () {
+        return view('admin.programstudi');
+    });
+
+    Route::get('/semester', function () {
+        return view('admin.semester');
+    });
+    Route::get('/jadwal', function () {
+        return view('pages.jadwal');
+    });
+    Route::get('/penilaian', function () {
+        return view('pages.penilaian');
+    });
+
+
+    // route api
+    Route::prefix('survei')->group(function () {
+        Route::prefix('user')->controller(UserController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+
+
+
+        Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'testCalculation');
+            Route::get('/get/{id}', 'getDataById');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+        Route::prefix('history')->controller(HasilMarcos::class)->group(function () {
+            Route::get('/', 'getAllData');
+            Route::post('/create', 'createData');
+            Route::get('/get-top-dosen', 'getTopDosen');
+            Route::post('/update/{id}', 'updateData');
+            Route::delete('/delete/{id}', 'deleteData');
+        });
+    });
+    Route::post('sitasi/logout', [LoginController::class, 'logout']);
 });

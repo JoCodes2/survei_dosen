@@ -7,6 +7,9 @@
     <title>Login | SIASCEND</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('assets/assets/stmik.png') }}" />
+    <script>
+        let appUrl = '{{ env('APP_URL') }}';
+    </script>
 
     @include('Layouts.Styles')
 
@@ -255,6 +258,12 @@
     </div>
 
     @include('Layouts.Scripts')
+    {{-- <script>
+        window.location.href = `/`;
+    </script> --}}
+
+    <script type="module" src="{{ asset('controllers/login.controller.js') }}"></script>
+
 </body>
 
 </html>

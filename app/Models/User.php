@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 
 
-class UserModel extends Authenticatable
+class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids;
+    use HasFactory, Notifiable, HasUuids, HasApiTokens;
 
     use HasFactory, HasUuids;
 
