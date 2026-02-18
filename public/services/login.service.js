@@ -31,12 +31,15 @@ class loginService {
             });
 
             const formData = new FormData(e.target);
-            const responseData = await this.ajaxRequest(`${appUrl}/sitasi/login`, 'POST', formData);
+            const responseData = await this.ajaxRequest(`${appUrl}/survei/login`, 'POST', formData);
+            console.log(responseData);
 
             if (responseData.status === 'success') {
                 Swal.close();
                 successAlert().then(() => {
-                    window.location.href = `${appUrl}/`;
+                    // window.location.href = `${appUrl}/`;
+                    window.location.href = `/dashboard`;
+
                 });
             }
         } catch (error) {

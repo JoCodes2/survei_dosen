@@ -12,7 +12,7 @@ class UserRepositories implements UserInterfaces
 {
     use HttpResponseTraits;
     protected $User;
-    public function __construct(UserModel $User)
+    public function __construct(User $User)
     {
         $this->User = $User;
     }
@@ -25,7 +25,7 @@ class UserRepositories implements UserInterfaces
         }
         return $this->success($data);
     }
-    
+
     public function createData(UserRequest $request)
     {
         try {

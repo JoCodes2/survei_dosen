@@ -82,6 +82,7 @@ class DatabaseSeeder extends Seeder
                 ['MHS002', 'Mahasiswa R2', [5, 4, 5, 5]],
                 ['MHS003', 'Mahasiswa R3', [3, 4, 3, 4]],
             ],
+
         ];
 
         $dataPenilaian = [];
@@ -132,5 +133,9 @@ class DatabaseSeeder extends Seeder
 
         // Insert semua data penilaian sekaligus
         DB::table('penilaian')->insert($dataPenilaian);
+
+        $this->call([
+            AuthSeeder::class,
+        ]);
     }
 }
