@@ -1,117 +1,95 @@
+/**
+ * Global Helper Alert SICICI
+ * Theme: Blue & White
+ */
+
 // reload browser
 function realoadBrowser() {
     window.location.reload();
 }
 
-// alert confirm message
-function confirmAlert1(title, text, callback) {
-    Swal.fire({
-        title: `<span style="font-size: 22px">${title}</span>`,
-        text: text,
-        showCancelButton: true,
-        showConfirmButton: true,
-        cancelButtonText: 'Tidak',
-        confirmButtonText: 'Ya',
-        reverseButtons: true,
-        confirmButtonColor: '#48ABF7',
-        cancelButtonColor: '#EFEFEF',
-        customClass: {
-            cancelButton: 'text-dark'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            if (typeof callback === "function") {
-                callback();
-            }
-        }
-    });
-}
+// alert confirm message (Versi General)
 function confirmAlert(message, callback) {
     Swal.fire({
-        title: '<span style="font-size: 22px"> Konfirmasi</span>',
-        text: message, // Gunakan pesan dari parameter
+        title: '<span style="font-size: 20px; font-weight: 600;">Konfirmasi</span>',
+        text: message,
+        icon: 'question',
         showCancelButton: true,
         showConfirmButton: true,
         cancelButtonText: 'Tidak',
-        confirmButtonText: 'Ya',
+        confirmButtonText: 'Ya, Lanjutkan',
         reverseButtons: true,
-        confirmButtonColor: '#48ABF7',
-        cancelButtonColor: '#EFEFEF',
+        confirmButtonColor: '#0026ff', // Biru Utama SICICI
+        cancelButtonColor: '#ffffff', // Putih
         customClass: {
-            cancelButton: 'text-dark'
+            cancelButton: 'border text-dark', // Beri border agar tombol putih terlihat
+            popup: 'rounded-4'
         }
     }).then((result) => {
-        // Cek jika tombol confirm (Ya) diklik
-        if (result.isConfirmed) {
-            if (typeof callback === "function") {
-                callback(); // Jalankan fungsi hapus di sini
-            }
+        if (result.isConfirmed && typeof callback === "function") {
+            callback();
         }
     });
 }
-
-
 
 // alert success message
 function successAlert(message) {
     return Swal.fire({
-        title: 'Berhasil!',
+        title: '<span style="font-weight: 600;">Berhasil!</span>',
         text: message,
         icon: 'success',
+        iconColor: '#0026ff',
         showConfirmButton: false,
-        timer: 1000,
-    });
-}
-
-function errorAlert() {
-    return Swal.fire({
-        title: 'Error',
-        text: 'Terjadi kesalahan!',
-        icon: 'error',
-        showConfirmButton: false,
-        timer: 1000,
-    });
-}
-function warningAlert(message) {
-    Swal.fire({
-        title: 'Peringatan !',
-        text: message,
-        icon: 'warning',
-        timer: 5000,
-        showConfirmButton: true,
-        confirmButtonText: 'Ok',
-        confirmButtonColor: '#FFAD46',
-    });
-}
-
-function emailOrPasswordWrong() {
-    return Swal.fire({
-        title: 'Peringatan',
-        text: 'username atau password anda salah !',
-        icon: 'warning',
-        timer: 5000,
-        showConfirmButton: true
-    });
-}
-
-
-
-function exportAlert(message) {
-    return Swal.fire({
-        title: '<span style="font-size: 22px"> Konfirmasi</span>',
-        text: "Apakah anda yakin?",
-        showCancelButton: true,
-        showConfirmButton: true,
-        cancelButtonText: 'Tidak',
-        confirmButtonText: 'Ya',
-        reverseButtons: true,
-        confirmButtonColor: '#48ABF7',
-        cancelButtonColor: '#EFEFEF',
+        timer: 1500,
         customClass: {
-            cancelButton: 'text-dark'
+            popup: 'rounded-4'
         }
     });
 }
+
+// alert error message
+function errorAlert(message = 'Terjadi kesalahan!') {
+    return Swal.fire({
+        title: '<span style="font-weight: 600;">Error</span>',
+        text: message,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonColor: '#0026ff',
+        customClass: {
+            popup: 'rounded-4'
+        }
+    });
+}
+
+// alert warning message
+function warningAlert(message) {
+    Swal.fire({
+        title: '<span style="font-weight: 600;">Peringatan!</span>',
+        text: message,
+        icon: 'warning',
+        showConfirmButton: true,
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#0026ff',
+        customClass: {
+            popup: 'rounded-4'
+        }
+    });
+}
+
+// alert login error
+function emailOrPasswordWrong() {
+    return Swal.fire({
+        title: 'Gagal Login',
+        text: 'Username atau password anda salah!',
+        icon: 'warning',
+        confirmButtonColor: '#0026ff',
+        customClass: {
+            popup: 'rounded-4'
+        }
+    });
+}
+
+// loading alert
 const loadingAllert = (title = 'Mohon Tunggu', text = 'Sedang memproses data...') => {
     return Swal.fire({
         title: title,
@@ -122,6 +100,9 @@ const loadingAllert = (title = 'Mohon Tunggu', text = 'Sedang memproses data...'
         showConfirmButton: false,
         didOpen: () => {
             Swal.showLoading();
+            // Menyesuaikan warna loader ke biru
+            const loader = Swal.getHtmlContainer().querySelector('.swal2-loader');
+            if (loader) loader.style.borderTopColor = '#0026ff';
         }
     });
 };

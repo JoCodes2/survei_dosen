@@ -5,23 +5,21 @@ namespace App\Repositories;
 use App\Http\Requests\SemesterRequest;
 
 use App\Interfaces\SemesterInterfaces;
-
 use App\Models\semesterModel;
-use App\Models\TopikPenelitian;
 use App\Traits\HttpResponseTraits;
 
 class SemesterRepositories implements SemesterInterfaces
 {
     use HttpResponseTraits;
-    protected $Semester;
-    public function __construct(semesterModel $Semester)
+    protected $semester;
+    public function __construct(semesterModel $semester)
     {
-        $this->Semester = $Semester;
+        $this->semester = $semester;
     }
 
     public function getAllData()
     {
-        $data = $this->Semester::all();
+        $data = $this->semester::all();
         if (!$data) {
             return $this->dataNotFound();
         }
@@ -30,7 +28,7 @@ class SemesterRepositories implements SemesterInterfaces
     public function createData(SemesterRequest $request)
     {
         try {
-            $data = new $this->Semester;
+            $data = new $this->semester;
             $data->nama_semester = $request->input('nama_semester');
             $data->tahun_akademik = $request->input('tahun_akademik');
 
@@ -48,7 +46,7 @@ class SemesterRepositories implements SemesterInterfaces
     }
     public function getDataById($id)
     {
-        $data = $this->Semester::find($id);
+        $data = $this->semester::find($id);
         if (!$data) {
             return $this->dataNotFound();
         }
@@ -57,7 +55,7 @@ class SemesterRepositories implements SemesterInterfaces
     public function updateData($id, SemesterRequest $request)
     {
         try {
-            $data = $this->Semester::find($id);
+            $data = $this->semester::find($id);
             $data->nama_semester = $request->input('nama_semester');
             $data->tahun_akademik = $request->input('tahun_akademik');
             $data->save();
@@ -74,7 +72,7 @@ class SemesterRepositories implements SemesterInterfaces
     }
     public function deleteData($id)
     {
-        $data = $this->Semester::find($id);
+        $data = $this->semester::find($id);
         if (!$data) {
             return $this->dataNotFound();
         }
@@ -85,7 +83,7 @@ class SemesterRepositories implements SemesterInterfaces
     public function toggleActive($id)
     {
         try {
-            $data = $this->Semester::find($id);
+            $data = $this->semester::find($id);
             if (!$data) {
                 return $this->dataNotFound();
             }

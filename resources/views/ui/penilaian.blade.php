@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <p class="text-white/50 text-xs font-medium">STMIK Adhi Guna</p>
-                    <p class="text-white font-bold text-sm">Sistem Survei Kepuasan Mahasiswa</p>
+                    <p class="text-white font-bold text-sm">Sistem Analisis Interaksi Akademik Mahasiswa dan Dosen STMIK Adhi Guna menggunakan Metode MARCOS</p>
                 </div>
             </div>
 
