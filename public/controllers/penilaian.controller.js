@@ -54,6 +54,7 @@ function setupRealtimeValidation() {
         }
     });
 }
+
 // ---------------------------------------
 
 function renderDropdown(selector, data, nameField) {
@@ -68,23 +69,52 @@ function renderQuestions(kriteria) {
     const container = $('#questionContainer');
     container.empty();
 
+    const deskripsi = {
+        1: "Sangat Kurang",
+        2: "Kurang",
+        3: "Cukup",
+        4: "Baik",
+        5: "Sangat Baik"
+    };
+
     kriteria.forEach((krit, index) => {
         const qNum = index + 1;
+
+        let opsiHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            opsiHtml += `
+                <div class="relative h-full">
+                    <input type="radio"
+                           name="skor_kriteria[${krit.id}]"
+                           id="q${qNum}v${i}"
+                           value="${i}"
+                           class="peer hidden"
+                           required>
+                    <label for="q${qNum}v${i}"
+                           class="flex flex-col items-center justify-center h-full p-3 rounded-2xl border-2 border-slate-100 bg-slate-50 cursor-pointer transition-all duration-200
+                                  hover:bg-white hover:border-slate-300
+                                  peer-checked:border-[#1B4FD8] peer-checked:bg-blue-50 peer-checked:text-[#1B4FD8] peer-checked:shadow-sm">
+                        <span class="text-sm font-black mb-1">${i}</span>
+                        <span class="text-[9px] font-bold uppercase tracking-tighter text-center leading-tight opacity-70">
+                            ${deskripsi[i]}
+                        </span>
+                    </label>
+                </div>
+            `;
+        }
+
         const html = `
-            <div class="question-item border border-[rgba(27,79,216,0.2)] rounded-2xl p-4 transition-all hover:border-[#1B4FD8]/30 hover:shadow-md">
-                <div class="flex items-start gap-3 mb-4">
-                    <span class="w-6 h-6 bg-[#1B4FD8] text-white rounded-lg text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">${qNum}</span>
+            <div class="question-item border border-slate-100 rounded-[2rem] p-6 mb-6 bg-white shadow-sm transition-all duration-300">
+                <div class="flex items-start gap-4 mb-6">
+                    <span class="w-8 h-8 bg-[#1B4FD8] text-white rounded-xl text-xs font-black flex items-center justify-center shrink-0 shadow-lg shadow-blue-100">${qNum}</span>
                     <div class="flex-1">
-                        <p class="text-xs font-bold text-[#1B4FD8] uppercase tracking-wider mb-1">Pertanyaan</p>
-                        <p class="text-sm font-semibold text-[#0B2A4A] leading-relaxed">${krit.nama_kriteria} ?</p>
+                        <p class="text-[10px] font-black text-[#1B4FD8] uppercase tracking-[0.2em] mb-1">Pertanyaan Survei</p>
+                        <p class="text-base font-bold text-slate-800 leading-snug">${krit.nama_kriteria} ?</p>
                     </div>
                 </div>
-                <div class="rating-wrap flex gap-2">
-                    <input type="radio" name="skor_kriteria[${krit.id}]" id="q${qNum}v1" value="1" required><label for="q${qNum}v1">1</label>
-                    <input type="radio" name="skor_kriteria[${krit.id}]" id="q${qNum}v2" value="2" required><label for="q${qNum}v2">2</label>
-                    <input type="radio" name="skor_kriteria[${krit.id}]" id="q${qNum}v3" value="3" required><label for="q${qNum}v3">3</label>
-                    <input type="radio" name="skor_kriteria[${krit.id}]" id="q${qNum}v4" value="4" required><label for="q${qNum}v4">4</label>
-                    <input type="radio" name="skor_kriteria[${krit.id}]" id="q${qNum}v5" value="5" required><label for="q${qNum}v5">5</label>
+
+                <div class="rating-container grid grid-cols-2 sm:grid-cols-5 gap-3">
+                    ${opsiHtml}
                 </div>
             </div>
         `;
@@ -139,36 +169,31 @@ window.selectDosen = function (element, namaDosen, idJadwal) {
     $('#selected_kelas_id').val(idJadwal);
     window.selectedDosenName = namaDosen;
     $('#err_dosen').hide();
-
-    // Beri efek visual bahwa step 2 selesai
     $('#step2Indicator').addClass('text-green-600').removeClass('text-slate-400');
 }
 
 window.submitSurvei = async function () {
     const nama = $('#f_nama').val();
     const nim = $('#f_nim').val();
-    const prodi = $('#f_prodi').val();
-    const semester = $('#f_semester').val();
     const kelasId = $('#selected_kelas_id').val();
 
     let skorKriteria = {};
-    $('#questionContainer .rating-wrap').each(function () {
-        const radioChecked = $(this).find('input[type="radio"]:checked');
-        if (radioChecked.length > 0) {
-            const nameAttr = radioChecked.attr('name');
-            const kriteriaId = nameAttr.match(/\[(.*?)\]/)[1];
-            skorKriteria[kriteriaId] = radioChecked.val();
-        }
+    // Mengambil data dari input radio yang checked
+    $('#questionContainer input[type="radio"]:checked').each(function () {
+        const nameAttr = $(this).attr('name');
+        const kriteriaId = nameAttr.match(/\[(.*?)\]/)[1];
+        skorKriteria[kriteriaId] = $(this).val();
     });
 
     const payload = {
         nama_mahasiswa: nama,
         nim: nim,
         kelas_id: kelasId,
-        skor_kriteria: skorKriteria
+        skor_kriteria: skorKriteria,
+        beri_rating: 1 // Sesuai instruksi memori untuk penghitungan CF di masa depan
     };
 
-    confirmAlert('Apakah Anda yakin data yang diisi sudah benar dan ingin mengirim survei ini?', async () => {
+    confirmAlert('Apakah Anda yakin data yang diisi sudah benar?', async () => {
         try {
             loadingAllert();
             const response = await surveiService.submitPenilaianJSON(payload);
@@ -223,14 +248,12 @@ window.validateStep1 = function () {
             $(field).addClass('border-red-500 shake').removeClass('border-green-500');
             $(`${field}-error`).show();
             valid = false;
-
             setTimeout(() => $(field).removeClass('shake'), 500);
         } else {
             $(field).removeClass('border-red-500').addClass('border-green-500');
             $(`${field}-error`).hide();
         }
     });
-
     return valid;
 }
 
@@ -239,7 +262,6 @@ window.validateStep2 = function () {
     if (!selectedDosenId || selectedDosenId === 'undefined') {
         $('#dosenList').addClass('border-2 border-red-500 rounded-2xl p-2 shake');
         $('#err_dosen').show();
-
         setTimeout(() => $('#dosenList').removeClass('shake'), 500);
         return false;
     }
@@ -253,30 +275,36 @@ window.validateStep3 = function () {
     let totalScore = 0;
     let questionCount = 0;
 
-    $('.question-item').removeClass('border-red-500').addClass('border-[rgba(27,79,216,0.2)]');
+    // Reset style semua pertanyaan
+    $('.question-item').removeClass('border-red-500 shadow-red-500/10 shadow-lg').addClass('border-slate-100');
 
-    $('#questionContainer .rating-wrap').each(function () {
+    $('.question-item').each(function () {
         questionCount++;
-        const val = $(this).find('input[type="radio"]:checked').val();
-        if (!val) {
+        const radioChecked = $(this).find('input[type="radio"]:checked');
+
+        if (radioChecked.length === 0) {
             valid = false;
-            $(this).closest('.question-item').removeClass('border-[rgba(27,79,216,0.2)]').addClass('border-red-500 shake');
+            $(this).removeClass('border-slate-100').addClass('border-red-500 shake shadow-lg shadow-red-500/10');
         } else {
-            totalScore += parseInt(val);
+            totalScore += parseInt(radioChecked.val());
         }
     });
 
     if (!valid) {
         $('#err_questions').show();
+        // Scroll otomatis ke pertanyaan pertama yang error
+        const firstError = $('.border-red-500').first();
+        if (firstError.length) {
+            $('html, body').animate({ scrollTop: firstError.offset().top - 100 }, 500);
+        }
         setTimeout(() => $('.question-item').removeClass('shake'), 500);
         return false;
     }
-    $('#err_questions').hide();
 
+    $('#err_questions').hide();
     window.currentAverageScore = (totalScore / questionCount).toFixed(1);
     return true;
 }
-// ------------------------------------------
 
 function populateReview() {
     $('#rev_nama').text($('#f_nama').val());
