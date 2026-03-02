@@ -17,7 +17,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nidn</th>
+                            <th>NIDN/NUPTK</th>
                             <th>Nama Dosen</th>
                             <th>Email</th>
                             <th>Jafung</th>
@@ -55,9 +55,9 @@
 
                         <!-- NIDN -->
                         <div class="form-group mb-3">
-                            <label for="nidn">NIDN</label>
+                            <label for="nidn">NIDN/NUPTK</label>
                             <input type="text" class="form-control" name="nidn" id="nidn"
-                                placeholder="Masukkan NIDN">
+                                placeholder="Masukkan NIDN/NUPTK">
                             <div class="invalid-feedback" id="nidn-error"></div>
                         </div>
 
