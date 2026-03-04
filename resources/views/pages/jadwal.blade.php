@@ -43,7 +43,7 @@
 
         @php
             // Menyesuaikan header tabel
-            $headers = ['No', 'Program Studi', 'Semester','Dosen', 'Aksi'];
+            $headers = ['No', 'Doden', 'Program Studi', 'Semester', 'Aksi'];
         @endphp
 
         <x-base-table :headers="$headers" id="kelasTable">

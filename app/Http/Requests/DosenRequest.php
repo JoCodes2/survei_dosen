@@ -27,13 +27,10 @@ class DosenRequest extends FormRequest
         $isUpdate = $this->route('id') !== null;
 
         return [
-            'nidn' => $isUpdate
-                ? 'required|string|max:20'
-                : 'required|string|max:20|unique:dosen,nidn',
             'nama_lengkap' => 'required|string|max:255',
             'email' => $isUpdate
-            ? 'required|email|max:255'
-            : 'required|email|max:255|unique:dosen,email',
+                ? 'required|email|max:255'
+                : 'required|email|max:255|unique:dosen,email',
             'jabatan_fungsional' => 'nullable|string|max:100',
         ];
     }
@@ -41,10 +38,6 @@ class DosenRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nidn.required' => 'NIDN wajib diisi.',
-            'nidn.unique' => 'NIDN sudah terdaftar.',
-            'nidn.max' => 'NIDN maksimal 20 karakter.',
-
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
             'nama_lengkap.max' => 'Nama lengkap maksimal 255 karakter.',
 

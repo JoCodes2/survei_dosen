@@ -25,12 +25,12 @@ class DosenRepositories implements DosenInterfaces
         }
         return $this->success($data);
     }
-    
+
     public function createData(DosenRequest $request)
     {
         try {
             $data = new $this->Dosen;
-            $data->nidn = $request->input('nidn');
+            $data->nidn = $request->filled('nidn') ? $request->input('nidn') : '-';
             $data->nama_lengkap = $request->input('nama_lengkap');
             $data->email = $request->input('email');
             $data->jabatan_fungsional = $request->input('jabatan_fungsional');
@@ -58,7 +58,7 @@ class DosenRepositories implements DosenInterfaces
     {
         try {
             $data = $this->Dosen::find($id);
-            $data->nidn = $request->input('nidn');
+            $data->nidn = $request->filled('nidn') ? $request->input('nidn') : '-';
             $data->nama_lengkap = $request->input('nama_lengkap');
             $data->email = $request->input('email');
             $data->jabatan_fungsional = $request->input('jabatan_fungsional');
