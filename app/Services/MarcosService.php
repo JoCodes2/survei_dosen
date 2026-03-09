@@ -6,13 +6,11 @@ use Illuminate\Support\Facades\DB;
 
 class MarcosService
 {
-    /**
-     * Menghitung metode MARCOS berdasarkan Prodi dan Semester.
-     *
-     * @param string $prodiId
-     * @param string $semesterId
-     * @return array
-     */
+    private function r2($value)
+    {
+        return round((float) $value, 2);
+    }
+
     public function calculateMarcos($prodiId, $semesterId)
     {
         $kriteria = DB::table('kriteria')
@@ -23,7 +21,10 @@ class MarcosService
             return [];
         }
 
-        $w = $kriteria->pluck('bobot')->toArray();
+        $jumlahKriteria = $kriteria->count();
+        $bobot = $kriteria->pluck('bobot')->map(function ($item) {
+            return round((float) $item, 2);
+        })->toArray();
 
         $kelasIds = DB::table('kelas')
             ->where('program_studi_id', $prodiId)
@@ -46,9 +47,11 @@ class MarcosService
             return [];
         }
 
+        // 1. Matriks keputusan (dibulatkan 2 desimal)
         $matriksKeputusan = [];
         foreach ($alternatif as $alt) {
             $row = [];
+
             foreach ($kriteria as $krit) {
                 $rataSkor = DB::table('penilaian')
                     ->join('kelas', 'penilaian.kelas_id', '=', 'kelas.id')
@@ -57,78 +60,98 @@ class MarcosService
                     ->where('penilaian.kriteria_id', $krit->id)
                     ->avg('penilaian.skor');
 
-                $row[] = $rataSkor ?? 0;
+                $row[] = $this->r2($rataSkor ?? 0);
             }
+
             $matriksKeputusan[$alt->id] = $row;
         }
 
+        // 2. AI dan AAI
         $AI = [];
         $AAI = [];
-        for ($j = 0; $j < count($kriteria); $j++) {
+
+        for ($j = 0; $j < $jumlahKriteria; $j++) {
             $kolomSkor = array_column($matriksKeputusan, $j);
-            if ($kriteria[$j]->jenis == 'benefit') {
-                $AAI[$j] = max($kolomSkor);
-                $AI[$j] = min($kolomSkor);
+
+            if (($kriteria[$j]->jenis ?? 'benefit') === 'benefit') {
+                $AI[$j] = $this->r2(max($kolomSkor));
+                $AAI[$j] = $this->r2(min($kolomSkor));
             } else {
-                $AAI[$j] = min($kolomSkor);
-                $AI[$j] = max($kolomSkor);
+                $AI[$j] = $this->r2(min($kolomSkor));
+                $AAI[$j] = $this->r2(max($kolomSkor));
             }
         }
 
-        // 6. Normalisasi
+        // 3. SAAI
+        $SAAI = 0.0;
+        for ($j = 0; $j < $jumlahKriteria; $j++) {
+            if (($kriteria[$j]->jenis ?? 'benefit') === 'benefit') {
+                $nilaiAntiIdealNorm = $AI[$j] != 0 ? $this->r2($AAI[$j] / $AI[$j]) : 0;
+            } else {
+                $nilaiAntiIdealNorm = $AAI[$j] != 0 ? $this->r2($AI[$j] / $AAI[$j]) : 0;
+            }
+
+            $SAAI += $this->r2($nilaiAntiIdealNorm * $bobot[$j]);
+            $SAAI = $this->r2($SAAI);
+        }
+
+        $SAI = $this->r2(array_sum($bobot));
+
+        // 4. Normalisasi alternatif
         $normalisasi = [];
         foreach ($matriksKeputusan as $altId => $skorAlt) {
             $rowNorm = [];
+
             foreach ($skorAlt as $j => $skor) {
-                if ($kriteria[$j]->jenis == 'benefit') {
-                    $rowNorm[] = $AAI[$j] != 0 ? $skor / $AAI[$j] : 0;
+                if (($kriteria[$j]->jenis ?? 'benefit') === 'benefit') {
+                    $rowNorm[] = $AI[$j] != 0 ? $this->r2($skor / $AI[$j]) : 0.0;
                 } else {
-                    $rowNorm[] = $skor != 0 ? $AI[$j] / $skor : 0;
+                    $rowNorm[] = $skor != 0 ? $this->r2($AI[$j] / $skor) : 0.0;
                 }
             }
+
             $normalisasi[$altId] = $rowNorm;
         }
 
-        // 7. Matriks Bobot
-        $matriksBobot = [];
-        foreach ($normalisasi as $altId => $skorNorm) {
-            $rowBobot = [];
-            foreach ($skorNorm as $j => $skor) {
-                $rowBobot[] = $skor * $w[$j];
-            }
-            $matriksBobot[$altId] = $rowBobot;
-        }
-
-        // 8. Hitung Si (Nilai Total Alternatif)
+        // 5. Matriks bobot dan Si
         $Si = [];
-        foreach ($matriksBobot as $altId => $skorBobot) {
-            $Si[$altId] = array_sum($skorBobot);
+        foreach ($normalisasi as $altId => $rowNorm) {
+            $total = 0.0;
+
+            foreach ($rowNorm as $j => $nilaiNorm) {
+                $nilaiBobot = $this->r2($nilaiNorm * $bobot[$j]);
+                $total += $nilaiBobot;
+                $total = $this->r2($total);
+            }
+
+            $Si[$altId] = $this->r2($total);
         }
 
-        // 9. Hitung Utilitas (Ki+ dan Ki-)
-        $minSi = min($Si);
-        $maxSi = max($Si);
+        // 6. Hitung utilitas
         $result = [];
         foreach ($alternatif as $alt) {
-            $s = $Si[$alt->id];
-            $kMinus = $maxSi != 0 ? $s / $maxSi : 0;
-            $kPlus = $minSi != 0 ? $s / $minSi : 0;
-            $fKi = ($kMinus + $kPlus) / 2;
+            $s = $Si[$alt->id] ?? 0.0;
 
-            // --- PERUBAHAN DI SINI: Gunakan round(..., 2) ---
+            $kMinus = $SAAI != 0 ? $this->r2($s / $SAAI) : 0.0;
+            $kPlus  = $SAI != 0 ? $this->r2($s / $SAI) : 0.0;
+            $fKi    = $this->r2(($kMinus + $kPlus) / 2);
+
             $result[] = [
                 'dosen' => $alt->nama_lengkap,
-                'Si' => round($s, 2),
-                'K-' => round($kMinus, 2),
-                'K+' => round($kPlus, 2),
-                'F(Ki)' => round($fKi, 2),
+                'Si' => $this->r2($s),
+                'K-' => $kMinus,
+                'K+' => $kPlus,
+                'F(Ki)' => $fKi,
             ];
         }
 
-        // 10. Perankingan
         usort($result, function ($a, $b) {
             return $b['F(Ki)'] <=> $a['F(Ki)'];
         });
+
+        foreach ($result as $index => &$item) {
+            $item['ranking'] = $index + 1;
+        }
 
         return $result;
     }

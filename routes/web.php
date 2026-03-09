@@ -116,31 +116,31 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 
     // route api
-    Route::prefix('survei')->group(function () {
-        Route::prefix('user')->controller(UserController::class)->group(function () {
-            Route::get('/', 'getAllData');
-            Route::post('/create', 'createData');
-            Route::get('/get/{id}', 'getDataById');
-            Route::post('/update/{id}', 'updateData');
-            Route::delete('/delete/{id}', 'deleteData');
-        });
-
-
-
-        Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
-            Route::get('/', 'getAllData');
-            Route::post('/create', 'testCalculation');
-            Route::get('/get/{id}', 'getDataById');
-            Route::post('/update/{id}', 'updateData');
-            Route::delete('/delete/{id}', 'deleteData');
-        });
-        Route::prefix('history')->controller(HasilMarcos::class)->group(function () {
-            Route::get('/', 'getAllData');
-            Route::post('/create', 'createData');
-            Route::get('/get-top-dosen', 'getTopDosen');
-            Route::post('/update/{id}', 'updateData');
-            Route::delete('/delete/{id}', 'deleteData');
-        });
-    });
     Route::post('sitasi/logout', [LoginController::class, 'logout']);
+});
+Route::prefix('survei')->group(function () {
+    Route::prefix('user')->controller(UserController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+
+
+
+    Route::prefix('marcos')->controller(MarcosController::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'testCalculation');
+        Route::get('/get/{id}', 'getDataById');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
+    Route::prefix('history')->controller(HasilMarcos::class)->group(function () {
+        Route::get('/', 'getAllData');
+        Route::post('/create', 'createData');
+        Route::get('/get-top-dosen', 'getTopDosen');
+        Route::post('/update/{id}', 'updateData');
+        Route::delete('/delete/{id}', 'deleteData');
+    });
 });
