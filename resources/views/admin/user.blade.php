@@ -74,18 +74,6 @@
                                 Kosongkan jika tidak ingin mengubah password
                             </small>
                         </div>
-
-                        {{-- Role --}}
-                        <div class="form-group mb-3">
-                            <label for="role">Role</label>
-                            <select name="role" id="role" class="form-control">
-                                <option value="">-- Pilih Role --</option>
-                                <option value="admin">Admin</option>
-                                <option value="prodi">Prodi</option>
-                            </select>
-                            <div class="invalid-feedback" id="role-error"></div>
-                        </div>
-
                     </form>
                 </div>
 
@@ -223,8 +211,7 @@
                         $('#id').val(data.id);
                         $('#nama').val(data.nama);
                         $('#email').val(data.email);
-                        $('#password').val(''); // Kosongkan password untuk edit
-                        $('#role').val(data.role);
+                        $('#password').val('');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching data for edit:', error);

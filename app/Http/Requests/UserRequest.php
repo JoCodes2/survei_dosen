@@ -28,7 +28,6 @@ class UserRequest extends FormRequest
                 ? 'nullable|string|min:8'
                 : 'required|string|min:8',
 
-            'role' => 'required|string|max:50',
         ];
     }
 
@@ -44,8 +43,6 @@ class UserRequest extends FormRequest
 
             'password.required' => 'Password wajib diisi.',
             'password.min'      => 'Password minimal 8 karakter.',
-
-            'role.required' => 'Role wajib dipilih.',
         ];
     }
 

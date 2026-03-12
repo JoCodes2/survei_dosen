@@ -33,7 +33,7 @@ class UserRepositories implements UserInterfaces
             $data->nama = $request->input('nama');
             $data->email = $request->input('email');
             $data->password = bcrypt($request->input('password'));
-            $data->role = $request->input('role');
+            $data->role = 'admin';
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {
@@ -65,7 +65,7 @@ class UserRepositories implements UserInterfaces
             // if ($request->filled('password')) {
             //     $data->password = bcrypt($request->input('password'));
             // }
-            $data->role = $request->input('role');
+            $data->role = 'admin';
             $data->save();
             return $this->success($data);
         } catch (\Throwable $th) {
