@@ -20,7 +20,6 @@ class AuthSeeder extends Seeder
             'nama' => 'Administrator',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('12345678'),
-            'role' => 'admin'
         ]);
 
         $user->createToken('auth_token')->plainTextToken;
