@@ -20,7 +20,6 @@
                             <th>Nama</th>
                             <th>Email</th>
                             <th>Sandi</th>
-                            <th>Hak Akses</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -105,7 +104,6 @@
                                 <td>${item.nama}</td>
                                 <td>${item.email}</td>
                                 <td>****</td>
-                                <td>${item.role}</td>
                                 <td>
                                     <button type="button"
                                         class="btn btn-outline-primary btn-sm edit-btn"

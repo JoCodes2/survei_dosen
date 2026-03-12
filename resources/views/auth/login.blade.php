@@ -237,8 +237,8 @@
             <form id="loginForm" method="POST">
                 @csrf
                 <div class="input-box">
-                    <label>Email Address</label>
-                    <input type="email" name="email" class="input-field" placeholder="nim@student.ac.id" required>
+                    <label>Email</label>
+                    <input type="email" name="email" class="input-field" placeholder="exx@gmail.com" required>
                 </div>
 
                 <div class="input-box">
