@@ -58,7 +58,7 @@
     id="modalTambahKelas"
     title="Form Kelas"
     btnId="btnSimpanKelas"
-    btnText="Simpan Kelas"
+    btnText="Simpan Penugasan"
 >
     <form id="formKelas" method="POST">
         @csrf
